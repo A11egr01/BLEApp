@@ -41,6 +41,10 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
             manufacturerCode = manufacturerData.prefix(2).map { String(format: "%02X", $0) }.joined(separator: " ")
             manufacturerName = knownManufacturers[manufacturerCode] ?? "Unknown Manufacturer"
         }
+        
+        if manufacturerCode == "4C 00" {
+            print("🎧 Apple AirPods nearby! Device: \(peripheral.name ?? "Unknown")")
+        }
 
         if let existingDevice = discoveredDevices.first(where: { $0.peripheral.identifier == peripheral.identifier }) {
             existingDevice.rssi = RSSI
@@ -59,9 +63,25 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
             centralManager.connect(peripheral, options: nil)
             peripheral.delegate = self
         }
-
+        
+        if let name = peripheral.name, name.contains("Allegro") {
+            print("🎧 Allegro AirPods nearby! Device: \(name)")
+//            func findLostDevice(peripheral: peripheral, characteristic: CBCharacteristic) {
+                
+//            }
+        }
         DispatchQueue.main.async {
             self.delegate?.didUpdateDevices(devices: self.discoveredDevices)
+        }
+    }
+    
+    func findLostDevice(peripheral: CBPeripheral, characteristic: CBCharacteristic) {
+        let findMeCommand: [UInt8] = [0x01]  // Example: 0x01 = "Beep"
+        let data = Data(findMeCommand)
+        
+        if characteristic.properties.contains(.write) {
+            peripheral.writeValue(data, for: characteristic, type: .withResponse)
+            print("🔔 Sent 'Find Me' command to \(peripheral.name ?? "Device")")
         }
     }
 

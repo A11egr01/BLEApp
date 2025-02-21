@@ -13,8 +13,9 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
     @IBOutlet weak var tableView: UITableView!
     
     var selectedDevice: BLEDevice!
+       let refreshControl = UIRefreshControl()  // 🔄 Pull-to-Refresh
 
-    override func viewDidLoad() {
+       override func viewDidLoad() {
            super.viewDidLoad()
            
            tableView.dataSource = self
@@ -23,12 +24,36 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
            
            // ✅ Register the cell to prevent crashes
            tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DetailCell")
+           
+           // ✅ Add Pull-to-Refresh
+           refreshControl.addTarget(self, action: #selector(refreshBLEData), for: .valueChanged)
+           tableView.refreshControl = refreshControl
+           
+           // ✅ Start discovering services when opening the view
+           selectedDevice.peripheral.delegate = self
+           selectedDevice.peripheral.discoverServices(nil)
        }
-       
+
+       /// 🔄 **Pull-to-Refresh: Request all BLE data again**
+       @objc func refreshBLEData() {
+           print("🔄 Refreshing BLE Device Data...")
+
+           selectedDevice.services.removeAll()
+           selectedDevice.characteristics.removeAll()
+
+           // ✅ Rediscover services & characteristics
+           selectedDevice.peripheral.discoverServices(nil)
+           
+           // Stop refresh animation after 2 seconds (prevents UI hang)
+           DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+               self.refreshControl.endRefreshing()
+           }
+       }
+
        func numberOfSections(in tableView: UITableView) -> Int {
            return 2 + selectedDevice.services.count  // 1. Advertisement Data, 2. Services, 3+. Characteristics per service
        }
-       
+
        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
            if section == 0 {
                return selectedDevice.advertisementData.count
@@ -39,10 +64,10 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
                return selectedDevice.characteristics[service]?.count ?? 0
            }
        }
-       
+
        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
            let cell = tableView.dequeueReusableCell(withIdentifier: "DetailCell", for: indexPath)
-           
+
            if indexPath.section == 0 {
                let keys = Array(selectedDevice.advertisementData.keys)
                guard indexPath.row < keys.count else { return cell }
@@ -59,10 +84,10 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
                let characteristic = characteristics[indexPath.row]
                cell.textLabel?.text = "Characteristic: \(characteristic.uuid.uuidString)"
            }
-           
+
            return cell
        }
-       
+
        func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
            if section == 0 { return "Advertisement Data" }
            else if section == 1 { return "Services" }
@@ -71,7 +96,44 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
                return "Characteristics for \(service.uuid.uuidString)"
            }
        }
-       
+
+       // ✅ Handle BLE Service & Characteristic Discovery
+       func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+           if let error = error {
+               print("❌ Error discovering services: \(error)")
+               return
+           }
+
+           if let services = peripheral.services {
+               selectedDevice.services = services
+               print("🔍 Discovered Services: \(services.map { $0.uuid.uuidString })")
+
+               for service in services {
+                   peripheral.discoverCharacteristics(nil, for: service)
+               }
+           }
+
+           DispatchQueue.main.async {
+               self.tableView.reloadData()
+           }
+       }
+
+       func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+           if let error = error {
+               print("❌ Error discovering characteristics: \(error)")
+               return
+           }
+
+           if let characteristics = service.characteristics {
+               selectedDevice.characteristics[service] = characteristics
+               print("🔍 Characteristics for \(service.uuid): \(characteristics.map { $0.uuid.uuidString })")
+           }
+
+           DispatchQueue.main.async {
+               self.tableView.reloadData()
+           }
+       }
+
        // ✅ Expand characteristics when a service is tapped
        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
            if indexPath.section == 1 {  // Service section
