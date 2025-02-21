@@ -221,6 +221,17 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
 
        // ✅ Expand characteristics when a service is tapped
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if indexPath.section == 1 {  // Services section
+            let service = selectedDevice.services[indexPath.row]
+
+            if service.uuid.uuidString == "180A" {  // ✅ Device Information Service
+                let deviceInfoVC = DeviceInfoVC(nibName: "DeviceInfoVC", bundle: nil)
+                deviceInfoVC.selectedDevice = selectedDevice
+                navigationController?.pushViewController(deviceInfoVC, animated: true)
+            }
+        }
+        
         if indexPath.section > 1 {  // Only for characteristics
             let service = selectedDevice.services[indexPath.section - 2]
             guard let characteristics = selectedDevice.characteristics[service], indexPath.row < characteristics.count else { return }
@@ -234,6 +245,14 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
                 notifyVC.characteristic = characteristic
                 navigationController?.pushViewController(notifyVC, animated: true)
             }
+            
+            if characteristic.properties.contains(.read) {
+                  // ✅ Open `ReadDataVC` to show the read data
+                  let readVC = ReadDataVC(nibName: "ReadDataVC", bundle: nil)
+                  readVC.selectedDevice = selectedDevice
+                  readVC.characteristic = characteristic
+                  navigationController?.pushViewController(readVC, animated: true)
+              }
         }
     }
     

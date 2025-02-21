@@ -32,20 +32,23 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
         }
     }
 
-    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
         
         var manufacturerName = "Unknown Manufacturer"
         var manufacturerCode = "N/A"
-        
+
+        // ✅ Extract Manufacturer Data (First 2 bytes = Manufacturer ID)
         if let manufacturerData = advertisementData[CBAdvertisementDataManufacturerDataKey] as? Data {
             manufacturerCode = manufacturerData.prefix(2).map { String(format: "%02X", $0) }.joined(separator: " ")
             manufacturerName = knownManufacturers[manufacturerCode] ?? "Unknown Manufacturer"
         }
-        
+
+        // ✅ Check if it's an Apple device (AirPods, Beats, etc.)
         if manufacturerCode == "4C 00" {
             print("🎧 Apple AirPods nearby! Device: \(peripheral.name ?? "Unknown")")
         }
 
+        // ✅ Check for an existing device in the list
         if let existingDevice = discoveredDevices.first(where: { $0.peripheral.identifier == peripheral.identifier }) {
             existingDevice.rssi = RSSI
             existingDevice.advertisementData = advertisementData
@@ -59,21 +62,21 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
             )
             discoveredDevices.append(newDevice)
 
-            // Start connecting to fetch services
+            // ✅ Start connecting to fetch services for known devices
             centralManager.connect(peripheral, options: nil)
             peripheral.delegate = self
         }
-        
+
+        // ✅ Special Handling: Check for "Allegro" Custom Device Name
         if let name = peripheral.name, name.contains("Allegro") {
             print("🎧 Allegro AirPods nearby! Device: \(name)")
-//            func findLostDevice(peripheral: peripheral, characteristic: CBCharacteristic) {
-                
-//            }
         }
+
         DispatchQueue.main.async {
             self.delegate?.didUpdateDevices(devices: self.discoveredDevices)
         }
     }
+
     
     func findLostDevice(peripheral: CBPeripheral, characteristic: CBCharacteristic) {
         let findMeCommand: [UInt8] = [0x01]  // Example: 0x01 = "Beep"
