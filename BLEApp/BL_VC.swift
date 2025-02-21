@@ -79,6 +79,11 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
         let cell = tableView.dequeueReusableCell(withIdentifier: "BLEDeviceCell", for: indexPath) as! BLEDeviceCell
 
         let device = devices[indexPath.row]
+        if !device.services.isEmpty {
+            cell.backgroundColor = UIColor(white: 0.96, alpha: 1.0)
+        } else {
+            cell.backgroundColor = .white
+        }
         cell.configure(with: device.peripheral, manufacturer: device.manufacturer, manufacturerCode: device.manufacturerCode, rssi: device.rssi)
 
         return cell

@@ -167,7 +167,7 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
                 cell.detailTextLabel?.text = "🛠 \(characteristicName)"
             }
         }
-
+        cell.textLabel?.numberOfLines = 0
         return cell
     }
 

@@ -13,53 +13,86 @@ class NotifyDataVC: UIViewController, CBPeripheralDelegate {
     @IBOutlet weak var textView: UITextView!
     
     var selectedDevice: BLEDevice!
-    var characteristic: CBCharacteristic!
-    var receivedData: String = ""
+       var characteristic: CBCharacteristic!
+       var receivedData: String = ""
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+       override func viewDidLoad() {
+           super.viewDidLoad()
+           
+           title = "Live Data"
+           textView.isEditable = false
+           textView.text = "Waiting for data...\n"
 
-        title = "Live Data"
-        selectedDevice.peripheral.delegate = self
+           selectedDevice.peripheral.delegate = self
 
-        // ✅ Subscribe to characteristic notifications
-        selectedDevice.peripheral.setNotifyValue(true, for: characteristic)
+           // ✅ Ensure characteristic supports notifications
+           if characteristic.properties.contains(.notify) || characteristic.properties.contains(.indicate) {
+               selectedDevice.peripheral.setNotifyValue(true, for: characteristic)
+               print("✅ Subscribed to notifications for \(characteristic.uuid.uuidString)")
+           } else {
+               print("⚠️ This characteristic does NOT support notifications.")
+               textView.text = "⚠️ Notifications not supported for this characteristic."
+           }
+       }
 
-        // ✅ Setup TextView properties
-        textView.isEditable = false
-        textView.text = "Waiting for data...\n"
-    }
+       // ✅ Receive & Translate Incoming Data
+       func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+           if let error = error {
+               print("❌ Error reading data: \(error.localizedDescription)")
+               DispatchQueue.main.async {
+                   self.appendDataToTextView("❌ Error receiving data: \(error.localizedDescription)")
+               }
+               return
+           }
 
-    // ✅ Read incoming BLE data
-    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        if let error = error {
-            print("❌ Error reading data: \(error)")
-            return
-        }
+           if let data = characteristic.value {
+               let hexString = data.map { String(format: "%02X", $0) }.joined(separator: " ")
+               let translatedValue = translateCharacteristicValue(data: data)
 
-        if let data = characteristic.value {
-            let hexString = data.map { String(format: "%02X", $0) }.joined(separator: " ")
-            print("📡 Received Data: \(hexString)")
+               print("📡 Received Data: \(translatedValue) (\(hexString))")
 
-            DispatchQueue.main.async {
-                self.appendDataToTextView("📡 \(hexString)")
-            }
-        }
-    }
+               DispatchQueue.main.async {
+                   self.appendDataToTextView("📡 \(translatedValue) (\(hexString))")
+               }
+           }
+       }
 
-    /// ✅ Append new data to the text view with automatic scrolling
-    private func appendDataToTextView(_ newData: String) {
-        receivedData.append("\(newData)\n")
-        textView.text = receivedData
+       /// ✅ Append new data to the text view with auto-scrolling
+       private func appendDataToTextView(_ newData: String) {
+           receivedData.append("\(newData)\n")
+           textView.text = receivedData
 
-        // ✅ Auto-scroll to the latest data
-        let range = NSMakeRange(textView.text.count - 1, 1)
-        textView.scrollRangeToVisible(range)
-    }
+           let range = NSMakeRange(textView.text.count - 1, 1)
+           textView.scrollRangeToVisible(range)
+       }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        // ✅ Unsubscribe from notifications when leaving
-        selectedDevice.peripheral.setNotifyValue(false, for: characteristic)
-    }
-}
+       /// ✅ Convert BLE data to a human-readable format
+       private func translateCharacteristicValue(data: Data) -> String {
+           if let textValue = String(data: data, encoding: .utf8), !textValue.isEmpty {
+               return textValue.trimmingCharacters(in: .whitespacesAndNewlines)
+           }
+           if data.count == 1 { return "\(data[0])" }
+           if data.count == 2 {
+               let intValue = UInt16(data[0]) | (UInt16(data[1]) << 8)
+               return "\(intValue)"
+           }
+           if data.count == 4 {
+               let intValue = UInt32(data[0]) | (UInt32(data[1]) << 8) | (UInt32(data[2]) << 16) | (UInt32(data[3]) << 24)
+               return "\(intValue)"
+           }
+           if data.count == 16 {
+               let uuid = UUID(uuid: (data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11], data[12], data[13], data[14], data[15]))
+               return uuid.uuidString
+           }
+           return data.map { String(format: "%02X", $0) }.joined(separator: " ")
+       }
+
+       override func viewWillDisappear(_ animated: Bool) {
+           super.viewWillDisappear(animated)
+
+           if characteristic.properties.contains(.notify) {
+               print("🔌 Unsubscribing from notifications for \(characteristic.uuid.uuidString)")
+               selectedDevice.peripheral.setNotifyValue(false, for: characteristic)
+           }
+       }
+   }
