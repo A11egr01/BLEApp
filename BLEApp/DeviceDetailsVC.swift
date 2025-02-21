@@ -23,7 +23,7 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
            title = selectedDevice.peripheral.name ?? "BLE Device"
            
            // ✅ Register the cell to prevent crashes
-           tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DetailCell")
+//           tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DetailCell")
            
            // ✅ Add Pull-to-Refresh
            refreshControl.addTarget(self, action: #selector(refreshBLEData), for: .valueChanged)
@@ -32,7 +32,75 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
            // ✅ Start discovering services when opening the view
            selectedDevice.peripheral.delegate = self
            selectedDevice.peripheral.discoverServices(nil)
+           
+           if isAirPods(selectedDevice.peripheral) {
+               navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Alert", style: .plain, target: self, action: #selector(sendAlertToAirPods))
+           }
        }
+    
+    /// 🏷️ Get characteristic properties as a readable string
+    private func getCharacteristicProperties(_ characteristic: CBCharacteristic) -> String {
+        var properties: [String] = []
+
+        if characteristic.properties.contains(.read) {
+            properties.append("📖 Read")
+        }
+        if characteristic.properties.contains(.write) {
+            properties.append("✍️ Write")
+        }
+        if characteristic.properties.contains(.writeWithoutResponse) {
+            properties.append("✍️ Write (No Response)")
+        }
+        if characteristic.properties.contains(.notify) {
+            properties.append("🚀 Notify")
+        }
+        if characteristic.properties.contains(.indicate) {
+            properties.append("🔔 Indicate")
+        }
+        if characteristic.properties.contains(.broadcast) {
+            properties.append("📡 Broadcast")
+        }
+        if characteristic.properties.contains(.authenticatedSignedWrites) {
+            properties.append("🔒 Auth Write")
+        }
+        if characteristic.properties.contains(.extendedProperties) {
+            properties.append("🛠 Extended")
+        }
+
+        return properties.isEmpty ? "" : "[\(properties.joined(separator: ", "))]"
+    }
+
+    
+    private func isAirPods(_ peripheral: CBPeripheral) -> Bool {
+        guard let name = peripheral.name else { return false }
+        return name.contains("Allegro") || name.contains("AirPods") || name.contains("AirPods Max")
+    }
+    
+    /// 🔔 Send an alert signal to AirPods (Find My sound)
+    @objc private func sendAlertToAirPods() {
+        print("🔔 Sending alert signal to AirPods...")
+
+        guard let airPodsService = selectedDevice.services.first(where: { $0.uuid.uuidString == "D0611E78-BBB4-4591-A5F8-487910AE4366" }) else {
+            print("❌ AirPods service not found.")
+            return
+        }
+
+        guard let alertCharacteristic = selectedDevice.characteristics[airPodsService]?.first(where: { $0.uuid.uuidString == "D0611E78-BBB4-4591-A5F8-487910AE4366" }) else {
+            print("❌ AirPods alert characteristic not found.")
+            return
+        }
+
+        let alertCommand: [UInt8] = [0x02] // Example: 0x02 might trigger the "Find My" sound
+        let data = Data(alertCommand)
+        
+        if alertCharacteristic.properties.contains(.writeWithoutResponse) {
+            selectedDevice.peripheral.writeValue(data, for: alertCharacteristic, type: .withoutResponse)
+            print("✅ Alert command sent successfully.")
+        } else {
+            print("⚠️ Characteristic does not support writing.")
+        }
+    }
+
 
        /// 🔄 **Pull-to-Refresh: Request all BLE data again**
        @objc func refreshBLEData() {
@@ -65,28 +133,45 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
            }
        }
 
-       func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-           let cell = tableView.dequeueReusableCell(withIdentifier: "DetailCell", for: indexPath)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // ✅ Ensure cell is initialized with .subtitle style
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DetailCell")
+            ?? UITableViewCell(style: .subtitle, reuseIdentifier: "DetailCell")
 
-           if indexPath.section == 0 {
-               let keys = Array(selectedDevice.advertisementData.keys)
-               guard indexPath.row < keys.count else { return cell }
-               let key = keys[indexPath.row]
-               let value = selectedDevice.advertisementData[key] ?? "N/A"
-               cell.textLabel?.text = "\(key): \(value)"
-           } else if indexPath.section == 1 {
-               let service = selectedDevice.services[indexPath.row]
-               cell.textLabel?.text = "Service: \(service.uuid.uuidString)"
-               cell.accessoryType = .disclosureIndicator  // ✅ Indicates it can be expanded
-           } else {
-               let service = selectedDevice.services[indexPath.section - 2]
-               guard let characteristics = selectedDevice.characteristics[service], indexPath.row < characteristics.count else { return cell }
-               let characteristic = characteristics[indexPath.row]
-               cell.textLabel?.text = "Characteristic: \(characteristic.uuid.uuidString)"
-           }
+        if indexPath.section == 0 {
+            let keys = Array(selectedDevice.advertisementData.keys)
+            guard indexPath.row < keys.count else { return cell }
+            let key = keys[indexPath.row]
+            let value = selectedDevice.advertisementData[key] ?? "N/A"
+            cell.textLabel?.text = "\(key): \(value)"
+        } else if indexPath.section == 1 {
+            let service = selectedDevice.services[indexPath.row]
+            cell.textLabel?.text = "Service: \(service.uuid.uuidString)"
+            
+            // ✅ Show extra service details in detailTextLabel
+            if let serviceName = knownServices[service.uuid.uuidString] {
+                cell.detailTextLabel?.text = "🛠 \(serviceName)"
+            }
 
-           return cell
-       }
+            cell.accessoryType = .disclosureIndicator
+        } else {
+            let service = selectedDevice.services[indexPath.section - 2]
+            guard let characteristics = selectedDevice.characteristics[service], indexPath.row < characteristics.count else { return cell }
+            let characteristic = characteristics[indexPath.row]
+
+            let propertiesText = getCharacteristicProperties(characteristic)
+            cell.textLabel?.text = "Characteristic: \(characteristic.uuid.uuidString) \(propertiesText)"
+
+            // ✅ Show extra characteristic details in detailTextLabel
+            if let characteristicName = knownCharacteristics[characteristic.uuid.uuidString] {
+                cell.detailTextLabel?.text = "🛠 \(characteristicName)"
+            }
+        }
+
+        return cell
+    }
+
+
 
        func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
            if section == 0 { return "Advertisement Data" }
@@ -135,13 +220,53 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
        }
 
        // ✅ Expand characteristics when a service is tapped
-       func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-           if indexPath.section == 1 {  // Service section
-               let service = selectedDevice.services[indexPath.row]
-               if let characteristics = selectedDevice.characteristics[service], !characteristics.isEmpty {
-                   let indexSet = IndexSet(integer: indexPath.row + 2)  // The corresponding characteristics section
-                   tableView.reloadSections(indexSet, with: .automatic)
-               }
-           }
-       }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section > 1 {  // Only for characteristics
+            let service = selectedDevice.services[indexPath.section - 2]
+            guard let characteristics = selectedDevice.characteristics[service], indexPath.row < characteristics.count else { return }
+            
+            let characteristic = characteristics[indexPath.row]
+
+            // ✅ If characteristic supports Notify, open NotifyDataVC using XIB
+            if characteristic.properties.contains(.notify) {
+                let notifyVC = NotifyDataVC(nibName: "NotifyDataVC", bundle: nil)
+                notifyVC.selectedDevice = selectedDevice
+                notifyVC.characteristic = characteristic
+                navigationController?.pushViewController(notifyVC, animated: true)
+            }
+        }
+    }
+    
+    /// 🔍 Known BLE Services and Their Names
+    let knownServices: [String: String] = [
+        "180A": "📱 Device Information",
+        "180F": "🔋 Battery Service",
+        "180D": "❤️ Heart Rate Monitor",
+        "1809": "🌡️ Temperature Sensor",
+        "181A": "🌍 Environmental Sensor",
+        "1814": "👟 Step Counter",
+        "FEAA": "📍 iBeacon Service",
+        "D0611E78-BBB4-4591-A5F8-487910AE4366": "🎧 AirPods Service"
+    ]
+
+    /// 🔍 Known BLE Characteristics and Their Names
+    let knownCharacteristics: [String: String] = [
+        "2A29": "🏭 Manufacturer Name",
+        "2A24": "📦 Model Number",
+        "2A25": "🔢 Serial Number",
+        "2A26": "💽 Firmware Version",
+        "2A27": "🛠 Hardware Version",
+        "2A19": "🔋 Battery Level",
+        "2A37": "❤️ Heart Rate Data",
+        "2A1C": "🌡️ Body Temperature",
+        "2A6E": "🌡️ Air Temperature",
+        "2A67": "🏃 Speed Data",
+        "2A6C": "🧭 Altitude Data",
+        "2A53": "👟 Step Count",
+        "2A68": "📏 Stride Length",
+        "2A6B": "📍 GPS Coordinates",
+        "2A07": "📡 TX Power",
+        "2A00": "🎧 AirPods Name"
+    ]
+
    }
