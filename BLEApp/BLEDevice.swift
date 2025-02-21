@@ -15,6 +15,9 @@ class BLEDevice {
     var advertisementData: [String: Any]
     var services: [CBService] = []  // Stores discovered services
     var characteristics: [CBService: [CBCharacteristic]] = [:]  // Maps each service to its characteristics
+    
+    var batteryLevel: Int?  // ✅ Battery Level (0-100%)
+
 
     init(peripheral: CBPeripheral, rssi: NSNumber, manufacturer: String, manufacturerCode: String, advertisementData: [String: Any]) {
         self.peripheral = peripheral

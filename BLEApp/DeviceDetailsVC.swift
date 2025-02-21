@@ -212,7 +212,21 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
            if let characteristics = service.characteristics {
                selectedDevice.characteristics[service] = characteristics
                print("🔍 Characteristics for \(service.uuid): \(characteristics.map { $0.uuid.uuidString })")
+               
            }
+           
+           guard let characteristics = service.characteristics else { return }
+           selectedDevice.characteristics[service] = characteristics
+           
+           for characteristic in characteristics {
+                 print("🔍 Found Characteristic: \(characteristic.uuid.uuidString)")
+
+                 // ✅ Automatically read battery level
+                 if characteristic.uuid.uuidString == "2A19" {
+                     print("🔋 Requesting battery level...")
+                     peripheral.readValue(for: characteristic)
+                 }
+             }
 
            DispatchQueue.main.async {
                self.tableView.reloadData()

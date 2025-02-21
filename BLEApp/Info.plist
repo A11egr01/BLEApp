@@ -23,5 +23,7 @@
 	</dict>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>We need Bluetooth access to scan for nearby devices.</string>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
 </dict>
 </plist>

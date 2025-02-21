@@ -11,6 +11,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BL_VC" customModule="BLEApp" customModuleProvider="target">
             <connections>
                 <outlet property="tableView" destination="wMp-OM-2a1" id="8Ad-Gv-txv"/>
+                <outlet property="toggle" destination="QFP-3U-w8Y" id="nEe-rP-s6K"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -20,16 +21,26 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="wMp-OM-2a1">
-                    <rect key="frame" x="16" y="59" width="361" height="759"/>
+                    <rect key="frame" x="16" y="59" width="361" height="722"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </tableView>
+                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="QFP-3U-w8Y">
+                    <rect key="frame" x="16" y="786" width="361" height="32"/>
+                    <segments>
+                        <segment title="Named"/>
+                        <segment title="Unknown"/>
+                    </segments>
+                </segmentedControl>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="QFP-3U-w8Y" secondAttribute="bottom" constant="1" id="9Qh-zh-Ggr"/>
+                <constraint firstItem="QFP-3U-w8Y" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="D2J-Aw-uyp"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="wMp-OM-2a1" secondAttribute="trailing" constant="16" id="DYe-aW-E8w"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="wMp-OM-2a1" secondAttribute="bottom" id="Nr1-Gr-YW0"/>
+                <constraint firstItem="QFP-3U-w8Y" firstAttribute="top" secondItem="wMp-OM-2a1" secondAttribute="bottom" constant="5" id="DZn-Q9-Qbv"/>
                 <constraint firstItem="wMp-OM-2a1" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="csO-NS-Azs"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="QFP-3U-w8Y" secondAttribute="trailing" constant="16" id="fwz-jv-isq"/>
                 <constraint firstItem="wMp-OM-2a1" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="iaE-Da-hZ4"/>
             </constraints>
             <point key="canvasLocation" x="-153.43511450381678" y="-13.380281690140846"/>
