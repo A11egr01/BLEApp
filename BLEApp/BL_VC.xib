@@ -10,6 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BL_VC" customModule="BLEApp" customModuleProvider="target">
             <connections>
+                <outlet property="radarView" destination="CPS-K1-5ia" id="JNK-zc-itk"/>
                 <outlet property="tableView" destination="wMp-OM-2a1" id="8Ad-Gv-txv"/>
                 <outlet property="toggle" destination="QFP-3U-w8Y" id="nEe-rP-s6K"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -21,7 +22,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="wMp-OM-2a1">
-                    <rect key="frame" x="16" y="59" width="361" height="722"/>
+                    <rect key="frame" x="16" y="127" width="361" height="654"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </tableView>
                 <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="QFP-3U-w8Y">
@@ -31,6 +32,13 @@
                         <segment title="Unknown"/>
                     </segments>
                 </segmentedControl>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CPS-K1-5ia">
+                    <rect key="frame" x="16" y="59" width="361" height="60"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="60" id="4wX-a2-uvr"/>
+                    </constraints>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -39,9 +47,12 @@
                 <constraint firstItem="QFP-3U-w8Y" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="D2J-Aw-uyp"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="wMp-OM-2a1" secondAttribute="trailing" constant="16" id="DYe-aW-E8w"/>
                 <constraint firstItem="QFP-3U-w8Y" firstAttribute="top" secondItem="wMp-OM-2a1" secondAttribute="bottom" constant="5" id="DZn-Q9-Qbv"/>
+                <constraint firstItem="wMp-OM-2a1" firstAttribute="top" secondItem="CPS-K1-5ia" secondAttribute="bottom" constant="8" symbolic="YES" id="Dut-X4-hh7"/>
+                <constraint firstItem="CPS-K1-5ia" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="IT6-4l-o5K"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="CPS-K1-5ia" secondAttribute="trailing" constant="16" id="V9J-0h-ULi"/>
                 <constraint firstItem="wMp-OM-2a1" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="csO-NS-Azs"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="QFP-3U-w8Y" secondAttribute="trailing" constant="16" id="fwz-jv-isq"/>
-                <constraint firstItem="wMp-OM-2a1" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="iaE-Da-hZ4"/>
+                <constraint firstItem="CPS-K1-5ia" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="h1H-aK-pbT"/>
             </constraints>
             <point key="canvasLocation" x="-153.43511450381678" y="-13.380281690140846"/>
         </view>
