@@ -19,7 +19,7 @@ class ViewController: UIViewController {
 
     private let breathLabel: UILabel = {
         let label = UILabel()
-        label.text = "Breath"
+        label.text = "...Breathe..."
         label.textColor = .white
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
@@ -31,6 +31,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         setupBreathingBubble()
         startBreathingAnimation()
+        view.backgroundColor = .white
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // Change time if needed
             self.pushBL_VC()

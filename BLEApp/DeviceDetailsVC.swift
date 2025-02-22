@@ -11,7 +11,8 @@ import CoreBluetooth
 class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDelegate, CBPeripheralDelegate {
 
     @IBOutlet weak var tableView: UITableView!
-    
+//    private var batteryLevel: Int?  // Store battery level
+
     var selectedDevice: BLEDevice!
        let refreshControl = UIRefreshControl()  // 🔄 Pull-to-Refresh
 
@@ -166,7 +167,29 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
             if let characteristicName = knownCharacteristics[characteristic.uuid.uuidString] {
                 cell.detailTextLabel?.text = "🛠 \(characteristicName)"
             }
+            
+            if characteristic.uuid.uuidString == "2A19" {  // Battery Level Characteristic
+                let batteryText: String
+                if let battery = selectedDevice.batteryLevel {
+                    batteryText = "🔋 Battery Level: \(battery)%"
+                } else {
+                    batteryText = "🔋 Battery Level: Fetching..."
+                }
+
+                let attributedText = NSMutableAttributedString(string: batteryText)
+                
+                if let battery = selectedDevice.batteryLevel {
+                    let range = (batteryText as NSString).range(of: "\(battery)%")
+                    attributedText.addAttributes([.font: UIFont.boldSystemFont(ofSize: 16)], range: range)
+                }
+                
+                cell.detailTextLabel?.attributedText = attributedText
+            }
+
         }
+        
+
+        
         cell.textLabel?.numberOfLines = 0
         return cell
     }
@@ -268,6 +291,46 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
                   navigationController?.pushViewController(readVC, animated: true)
               }
         }
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        if let error = error {
+            print("❌ Error reading characteristic value: \(error)")
+            return
+        }
+
+        // ✅ Battery Level (Handled in DeviceDetailsVC)
+        if characteristic.uuid.uuidString == "2A19", let value = characteristic.value {
+            selectedDevice.batteryLevel = Int(value.first ?? 0)
+            print("🔋 Battery Level Updated: \(selectedDevice.batteryLevel ?? 0)%")
+            
+            DispatchQueue.main.async {
+                if let batteryIndexPath = self.indexPathForBatteryCharacteristic() {
+                    self.tableView.reloadRows(at: [batteryIndexPath], with: .fade)
+                }
+            }
+            return  // 🔄 Exit to avoid processing in other VCs
+        }
+
+        // ❌ Ignore updates for Notify, Read, or Device Info handled elsewhere
+        if characteristic.properties.contains(.notify) ||
+           characteristic.properties.contains(.read) ||
+           characteristic.properties.contains(.indicate) {
+            print("➡️ Ignoring update for characteristic \(characteristic.uuid.uuidString), handled in other VCs")
+            return
+        }
+    }
+    private func indexPathForBatteryCharacteristic() -> IndexPath? {
+        for (serviceIndex, service) in selectedDevice.services.enumerated() {
+            if let characteristics = selectedDevice.characteristics[service] {
+                for (charIndex, characteristic) in characteristics.enumerated() {
+                    if characteristic.uuid.uuidString == "2A19" {
+                        return IndexPath(row: charIndex, section: serviceIndex + 2)
+                    }
+                }
+            }
+        }
+        return nil
     }
     
     /// 🔍 Known BLE Services and Their Names
