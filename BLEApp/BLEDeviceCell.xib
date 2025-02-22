@@ -39,7 +39,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="manufacturerLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D9Q-AT-JEz">
-                        <rect key="frame" x="16" y="81" width="299" height="21"/>
+                        <rect key="frame" x="16" y="81" width="299" height="32"/>
                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <color key="textColor" systemColor="systemGrayColor"/>
                         <nil key="highlightedColor"/>
@@ -49,7 +49,7 @@
                     <constraint firstItem="D9Q-AT-JEz" firstAttribute="top" secondItem="iby-bX-zU9" secondAttribute="bottom" constant="14" id="4YO-8M-0at"/>
                     <constraint firstItem="fS5-Dv-Uoj" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="OBe-z1-klr"/>
                     <constraint firstItem="iby-bX-zU9" firstAttribute="top" secondItem="fS5-Dv-Uoj" secondAttribute="bottom" constant="8" symbolic="YES" id="Rhq-B6-Pe8"/>
-                    <constraint firstAttribute="bottom" secondItem="D9Q-AT-JEz" secondAttribute="bottom" constant="16" id="XeF-7M-zPt"/>
+                    <constraint firstAttribute="bottom" secondItem="D9Q-AT-JEz" secondAttribute="bottom" constant="5" id="XeF-7M-zPt"/>
                     <constraint firstItem="iby-bX-zU9" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="ccE-aZ-YHp"/>
                     <constraint firstAttribute="trailing" secondItem="uXn-7O-sBf" secondAttribute="trailing" constant="5" id="dod-wd-bcJ"/>
                     <constraint firstItem="D9Q-AT-JEz" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="eCW-PG-WHE"/>

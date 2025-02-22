@@ -22,21 +22,24 @@ class BLEDeviceCell: UITableViewCell {
         if device.manufacturer == "Unknown Manufacturer" {
             manufacturerLabel.text = ""
         } else {
-            manufacturerLabel.text = "Manufacturer: \(device.manufacturer)"
+            manufacturerLabel.text = "\(device.manufacturer)"
         }
         
         // ✅ Append battery level if available
         if let battery = device.batteryLevel {
             manufacturerLabel.text! += " 🔋 Battery: \(battery)%"
         }
-        
-        uuidLabel.text = "UUID: \(device.peripheral.identifier.uuidString)"
-//        rssiLabel.text = "RSSI: \(device.rssi) dBm"
-        rssiLabel.textColor = getColorForRSSI(device.rssi.intValue)
-        
-//        rssiLabel.text = "\(rssi) \(distanceText)"
 
+        // ✅ Append Last Seen timestamp if available
+        if let timestamp = device.lastSeenTimestamp {
+            let formattedTime = formatTimestamp(timestamp)
+            manufacturerLabel.text! += " ⏳ Last Seen: \(formattedTime)"
+        }
+
+        uuidLabel.text = "UUID: \(device.peripheral.identifier.uuidString)"
+        rssiLabel.textColor = getColorForRSSI(device.rssi.intValue)
     }
+
     
 //    private func getColorForRSSI(_ rssi: Int) -> UIColor {
 //        switch rssi {
@@ -82,6 +85,18 @@ class BLEDeviceCell: UITableViewCell {
 
         // ✅ Return only the color (fixes logic issue)
         return rssiLabel.textColor
+    }
+    
+    private func formatTimestamp(_ timestamp: TimeInterval) -> String {
+        let elapsedTime = Date().timeIntervalSinceReferenceDate - timestamp
+
+        if elapsedTime < 60 {
+            return "\(Int(elapsedTime)) sec ago"
+        } else if elapsedTime < 3600 {
+            return "\(Int(elapsedTime / 60)) min ago"
+        } else {
+            return "\(Int(elapsedTime / 3600)) hr ago"
+        }
     }
 
 }

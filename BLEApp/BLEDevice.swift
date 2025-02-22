@@ -18,7 +18,7 @@ class BLEDevice {
     
     var batteryLevel: Int?  // ✅ Battery Level (0-100%)
     var readValues: [CBUUID: String] = [:]  // ✅ Stores read characteristic values
-
+    var lastSeenTimestamp: TimeInterval?  // ✅ Store kCBAdvDataTimestamp
 
     init(peripheral: CBPeripheral, rssi: NSNumber, manufacturer: String, manufacturerCode: String, advertisementData: [String: Any]) {
         self.peripheral = peripheral
@@ -26,6 +26,10 @@ class BLEDevice {
         self.manufacturer = manufacturer
         self.manufacturerCode = manufacturerCode
         self.advertisementData = advertisementData
+        
+        if let timestamp = advertisementData["kCBAdvDataTimestamp"] as? TimeInterval {
+            self.lastSeenTimestamp = timestamp
+        }
     }
     
     // Helper to store discovered characteristics for a service
