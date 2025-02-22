@@ -29,10 +29,10 @@
                         <color key="textColor" systemColor="opaqueSeparatorColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="%" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uXn-7O-sBf">
-                        <rect key="frame" x="204" y="17" width="100" height="15.666666666666664"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="%" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uXn-7O-sBf">
+                        <rect key="frame" x="195" y="4.9999999999999991" width="120" height="15.666666666666664"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="100" id="Srh-jT-46G"/>
+                            <constraint firstAttribute="width" constant="120" id="Srh-jT-46G"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                         <color key="textColor" systemColor="systemCyanColor"/>
@@ -51,12 +51,12 @@
                     <constraint firstItem="iby-bX-zU9" firstAttribute="top" secondItem="fS5-Dv-Uoj" secondAttribute="bottom" constant="8" symbolic="YES" id="Rhq-B6-Pe8"/>
                     <constraint firstAttribute="bottom" secondItem="D9Q-AT-JEz" secondAttribute="bottom" constant="16" id="XeF-7M-zPt"/>
                     <constraint firstItem="iby-bX-zU9" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="ccE-aZ-YHp"/>
-                    <constraint firstAttribute="trailing" secondItem="uXn-7O-sBf" secondAttribute="trailing" constant="16" id="dod-wd-bcJ"/>
+                    <constraint firstAttribute="trailing" secondItem="uXn-7O-sBf" secondAttribute="trailing" constant="5" id="dod-wd-bcJ"/>
                     <constraint firstItem="D9Q-AT-JEz" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="eCW-PG-WHE"/>
                     <constraint firstItem="fS5-Dv-Uoj" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="17" id="fb3-w5-awz"/>
                     <constraint firstAttribute="trailing" secondItem="D9Q-AT-JEz" secondAttribute="trailing" constant="5" id="jNY-Vm-UDC"/>
                     <constraint firstAttribute="trailing" secondItem="iby-bX-zU9" secondAttribute="trailing" constant="5" id="qom-6c-gfg"/>
-                    <constraint firstItem="uXn-7O-sBf" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="17" id="s8I-dY-OIM"/>
+                    <constraint firstItem="uXn-7O-sBf" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="s8I-dY-OIM"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
@@ -71,13 +71,13 @@
     </objects>
     <resources>
         <systemColor name="opaqueSeparatorColor">
-            <color red="0.77647058823529413" green="0.77647058823529413" blue="0.78431372549019607" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.77647058820000003" green="0.77647058820000003" blue="0.7843137255" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemCyanColor">
-            <color red="0.19607843137254902" green="0.67843137254901964" blue="0.90196078431372551" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.1960784314" green="0.67843137249999996" blue="0.90196078430000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGrayColor">
-            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

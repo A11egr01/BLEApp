@@ -31,19 +31,57 @@ class BLEDeviceCell: UITableViewCell {
         }
         
         uuidLabel.text = "UUID: \(device.peripheral.identifier.uuidString)"
-        rssiLabel.text = "RSSI: \(device.rssi) dBm"
+//        rssiLabel.text = "RSSI: \(device.rssi) dBm"
         rssiLabel.textColor = getColorForRSSI(device.rssi.intValue)
+        
+//        rssiLabel.text = "\(rssi) \(distanceText)"
+
     }
     
+//    private func getColorForRSSI(_ rssi: Int) -> UIColor {
+//        switch rssi {
+//        case (-100)...(-86): return UIColor.brown   // 🟤 Very Weak
+//        case (-85)...(-76): return UIColor.red     // 🔴 Weak
+//        case (-75)...(-66): return UIColor.orange  // 🟠 Far
+//        case (-65)...(-56): return UIColor.yellow  // 🟡 Medium Distance
+//        case (-55)...(-46): return UIColor.systemGreen // 🟢 Close
+//        case (-45)...(-30): return UIColor.green   // 🔥 Very Close
+//        default: return UIColor.gray               // ⚫ Unknown / Out of Range
+//        }
+//    }
+    
     private func getColorForRSSI(_ rssi: Int) -> UIColor {
+        var distanceText = ""
+
         switch rssi {
-        case (-100)...(-86): return UIColor.brown   // 🟤 Very Weak
-        case (-85)...(-76): return UIColor.red     // 🔴 Weak
-        case (-75)...(-66): return UIColor.orange  // 🟠 Far
-        case (-65)...(-56): return UIColor.yellow  // 🟡 Medium Distance
-        case (-55)...(-46): return UIColor.systemGreen // 🟢 Close
-        case (-45)...(-30): return UIColor.green   // 🔥 Very Close
-        default: return UIColor.gray               // ⚫ Unknown / Out of Range
+        case (-100)...(-86):
+            distanceText = "📡 Very Weak\n (~15+ meters)"
+            rssiLabel.textColor = UIColor.brown  // 🟤 Very Weak
+        case (-85)...(-76):
+            distanceText = "📶 Weak\n (~10-15 meters)"
+            rssiLabel.textColor = UIColor.red  // 🔴 Weak
+        case (-75)...(-66):
+            distanceText = "📡 Far\n (~5-10 meters)"
+            rssiLabel.textColor = UIColor.orange  // 🟠 Far
+        case (-65)...(-56):
+            distanceText = "📡 Getting Closer\n (~2-5 meters)"
+            rssiLabel.textColor = UIColor.systemBlue  // 🔵 Medium Distance
+        case (-55)...(-46):
+            distanceText = "📡 Close\n (~1-2 meters)"
+            rssiLabel.textColor = UIColor.systemGreen  // 🟢 Close
+        case (-45)...(-30):
+            distanceText = "🎯 Very Close\n (~<1 meter)"
+            rssiLabel.textColor = UIColor.green  // 💚 Extremely Close
+        default:
+            distanceText = "❓\n Unknown Distance"
+            rssiLabel.textColor = UIColor.gray  // ⚫ Unknown / Out of Range
         }
+
+        // ✅ Set the RSSI label with both value & distance
+        rssiLabel.text = "RSSI: \(rssi) dBm\n\(distanceText)"
+
+        // ✅ Return only the color (fixes logic issue)
+        return rssiLabel.textColor
     }
+
 }
