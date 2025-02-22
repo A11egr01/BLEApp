@@ -16,20 +16,23 @@ class BLEDeviceCell: UITableViewCell {
     @IBOutlet weak var manufacturerLabel: UILabel!
     
     
-    func configure(with peripheral: CBPeripheral, manufacturer: String, manufacturerCode: String, rssi: NSNumber) {
-        deviceNameLabel.text = peripheral.name ?? "Unknown Device"
+    func configure(with device: BLEDevice) {
+        deviceNameLabel.text = device.peripheral.name ?? "Unknown Device"
         
-        if manufacturer == "Unknown Manufacturer" {
-            manufacturerLabel.text = "Manufacturer: \(manufacturer) (\(manufacturerCode))"
+        if device.manufacturer == "Unknown Manufacturer" {
+            manufacturerLabel.text = ""
         } else {
-            manufacturerLabel.text = "Manufacturer: \(manufacturer)"
+            manufacturerLabel.text = "Manufacturer: \(device.manufacturer)"
         }
         
-        uuidLabel.text = "UUID: \(peripheral.identifier.uuidString)"
-        rssiLabel.text = "RSSI: \(rssi) dBm"
+        // ✅ Append battery level if available
+        if let battery = device.batteryLevel {
+            manufacturerLabel.text! += " 🔋 Battery: \(battery)%"
+        }
         
-        rssiLabel.textColor = getColorForRSSI(rssi.intValue)
-        
+        uuidLabel.text = "UUID: \(device.peripheral.identifier.uuidString)"
+        rssiLabel.text = "RSSI: \(device.rssi) dBm"
+        rssiLabel.textColor = getColorForRSSI(device.rssi.intValue)
     }
     
     private func getColorForRSSI(_ rssi: Int) -> UIColor {

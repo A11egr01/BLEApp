@@ -31,3 +31,34 @@ let knownManufacturers: [String: String] = [
     "1A FE": "Amazon",                  // Echo devices, Alexa gadgets
 ]
 
+/// 🔍 Known BLE Services and Their Names
+let knownServices: [String: String] = [
+    "180A": "📱 Device Information",
+    "180F": "🔋 Battery Service",
+    "180D": "❤️ Heart Rate Monitor",
+    "1809": "🌡️ Temperature Sensor",
+    "181A": "🌍 Environmental Sensor",
+    "1814": "👟 Step Counter",
+    "FEAA": "📍 iBeacon Service",
+    "D0611E78-BBB4-4591-A5F8-487910AE4366": "🎧 AirPods Service"
+]
+
+/// 🔍 Known BLE Characteristics and Their Names
+let knownCharacteristics: [String: String] = [
+    "2A29": "🏭 Manufacturer Name",
+    "2A24": "📦 Model Number",
+    "2A25": "🔢 Serial Number",
+    "2A26": "💽 Firmware Version",
+    "2A27": "🛠 Hardware Version",
+    "2A19": "🔋 Battery Level",
+    "2A37": "❤️ Heart Rate Data",
+    "2A1C": "🌡️ Body Temperature",
+    "2A6E": "🌡️ Air Temperature",
+    "2A67": "🏃 Speed Data",
+    "2A6C": "🧭 Altitude Data",
+    "2A53": "👟 Step Count",
+    "2A68": "📏 Stride Length",
+    "2A6B": "📍 GPS Coordinates",
+    "2A07": "📡 TX Power",
+    "2A00": "🎧 AirPods Name"
+]

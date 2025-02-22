@@ -17,6 +17,7 @@ class BLEDevice {
     var characteristics: [CBService: [CBCharacteristic]] = [:]  // Maps each service to its characteristics
     
     var batteryLevel: Int?  // ✅ Battery Level (0-100%)
+    var readValues: [CBUUID: String] = [:]  // ✅ Stores read characteristic values
 
 
     init(peripheral: CBPeripheral, rssi: NSNumber, manufacturer: String, manufacturerCode: String, advertisementData: [String: Any]) {
@@ -31,4 +32,5 @@ class BLEDevice {
     func addCharacteristics(for service: CBService, characteristics: [CBCharacteristic]) {
         self.characteristics[service] = characteristics
     }
+    
 }

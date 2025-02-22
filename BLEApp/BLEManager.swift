@@ -67,11 +67,6 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
             peripheral.delegate = self
         }
 
-        // ✅ Special Handling: Check for "Allegro" Custom Device Name
-        if let name = peripheral.name, name.contains("Allegro") {
-            print("🎧 Allegro AirPods nearby! Device: \(name)")
-        }
-
         DispatchQueue.main.async {
             self.delegate?.didUpdateDevices(devices: self.discoveredDevices)
         }

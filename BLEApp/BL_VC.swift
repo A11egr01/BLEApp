@@ -97,15 +97,17 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
             return filteredDevices.count
         }
 
-        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "BLEDeviceCell", for: indexPath) as! BLEDeviceCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "BLEDeviceCell", for: indexPath) as! BLEDeviceCell
 
-            let device = filteredDevices[indexPath.row]
-            cell.backgroundColor = device.services.isEmpty ? .white : UIColor(white: 0.96, alpha: 1.0)
-            cell.configure(with: device.peripheral, manufacturer: device.manufacturer, manufacturerCode: device.manufacturerCode, rssi: device.rssi)
+        let device = filteredDevices[indexPath.row]
+        cell.backgroundColor = device.services.isEmpty ? .white : UIColor(white: 0.96, alpha: 1.0)
+        
+        // ✅ Now, we just pass the BLEDevice object
+        cell.configure(with: device)
 
-            return cell
-        }
+        return cell
+    }
 
         // ✅ Setup Bluetooth Icon Inside `radarView`
         func setupBluetoothIcon() {

@@ -104,20 +104,24 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
 
 
        /// 🔄 **Pull-to-Refresh: Request all BLE data again**
-       @objc func refreshBLEData() {
-           print("🔄 Refreshing BLE Device Data...")
+    @objc func refreshBLEData() {
+        print("🔄 Refreshing BLE Device Data...")
 
-           selectedDevice.services.removeAll()
-           selectedDevice.characteristics.removeAll()
+        // ✅ Clear old data
+        selectedDevice.services.removeAll()
+        selectedDevice.characteristics.removeAll()
 
-           // ✅ Rediscover services & characteristics
-           selectedDevice.peripheral.discoverServices(nil)
-           
-           // Stop refresh animation after 2 seconds (prevents UI hang)
-           DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-               self.refreshControl.endRefreshing()
-           }
-       }
+        // ✅ Reload table to avoid accessing empty arrays
+        tableView.reloadData()
+
+        // ✅ Rediscover services & characteristics
+        selectedDevice.peripheral.discoverServices(nil)
+
+        // ✅ Stop refresh animation after 2 seconds (prevents UI hang)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.refreshControl.endRefreshing()
+        }
+    }
 
        func numberOfSections(in tableView: UITableView) -> Int {
            return 2 + selectedDevice.services.count  // 1. Advertisement Data, 2. Services, 3+. Characteristics per service
@@ -249,6 +253,11 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
                      print("🔋 Requesting battery level...")
                      peripheral.readValue(for: characteristic)
                  }
+               
+               if characteristic.properties.contains(.read) {
+                   print("📖 Requesting read for characteristic \(characteristic.uuid.uuidString)...")
+                   peripheral.readValue(for: characteristic)
+               }
              }
 
            DispatchQueue.main.async {
@@ -333,36 +342,4 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
         return nil
     }
     
-    /// 🔍 Known BLE Services and Their Names
-    let knownServices: [String: String] = [
-        "180A": "📱 Device Information",
-        "180F": "🔋 Battery Service",
-        "180D": "❤️ Heart Rate Monitor",
-        "1809": "🌡️ Temperature Sensor",
-        "181A": "🌍 Environmental Sensor",
-        "1814": "👟 Step Counter",
-        "FEAA": "📍 iBeacon Service",
-        "D0611E78-BBB4-4591-A5F8-487910AE4366": "🎧 AirPods Service"
-    ]
-
-    /// 🔍 Known BLE Characteristics and Their Names
-    let knownCharacteristics: [String: String] = [
-        "2A29": "🏭 Manufacturer Name",
-        "2A24": "📦 Model Number",
-        "2A25": "🔢 Serial Number",
-        "2A26": "💽 Firmware Version",
-        "2A27": "🛠 Hardware Version",
-        "2A19": "🔋 Battery Level",
-        "2A37": "❤️ Heart Rate Data",
-        "2A1C": "🌡️ Body Temperature",
-        "2A6E": "🌡️ Air Temperature",
-        "2A67": "🏃 Speed Data",
-        "2A6C": "🧭 Altitude Data",
-        "2A53": "👟 Step Count",
-        "2A68": "📏 Stride Length",
-        "2A6B": "📍 GPS Coordinates",
-        "2A07": "📡 TX Power",
-        "2A00": "🎧 AirPods Name"
-    ]
-
    }
