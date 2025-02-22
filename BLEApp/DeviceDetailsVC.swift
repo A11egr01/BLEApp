@@ -293,21 +293,19 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
             
             let characteristic = characteristics[indexPath.row]
 
-            // ✅ If characteristic supports Notify, open NotifyDataVC using XIB
-            if characteristic.properties.contains(.notify) {
-                let notifyVC = NotifyDataVC(nibName: "NotifyDataVC", bundle: nil)
-                notifyVC.selectedDevice = selectedDevice
-                notifyVC.characteristic = characteristic
-                navigationController?.pushViewController(notifyVC, animated: true)
+            let supportsRead = characteristic.properties.contains(.read)
+            let supportsNotify = characteristic.properties.contains(.notify)
+
+            if supportsRead && supportsNotify {
+                // ✅ Show action sheet to choose Read or Notify
+                presentCharacteristicActionSheet(characteristic)
+            } else if supportsRead {
+                // ✅ Directly open Read screen
+                openReadVC(for: characteristic)
+            } else if supportsNotify {
+                // ✅ Directly open Notify screen
+                openNotifyVC(for: characteristic)
             }
-            
-            if characteristic.properties.contains(.read) {
-                  // ✅ Open `ReadDataVC` to show the read data
-                  let readVC = ReadDataVC(nibName: "ReadDataVC", bundle: nil)
-                  readVC.selectedDevice = selectedDevice
-                  readVC.characteristic = characteristic
-                  navigationController?.pushViewController(readVC, animated: true)
-              }
         }
     }
     
@@ -349,6 +347,42 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
             }
         }
         return nil
+    }
+    
+    private func presentCharacteristicActionSheet(_ characteristic: CBCharacteristic) {
+        let actionSheet = UIAlertController(title: "Select Action",
+                                            message: "Would you like to read the characteristic value or receive live updates?",
+                                            preferredStyle: .actionSheet)
+
+        let readAction = UIAlertAction(title: "📖 Read Data", style: .default) { _ in
+            self.openReadVC(for: characteristic)
+        }
+
+        let notifyAction = UIAlertAction(title: "🚀 Notify (Live Updates)", style: .default) { _ in
+            self.openNotifyVC(for: characteristic)
+        }
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+
+        actionSheet.addAction(readAction)
+        actionSheet.addAction(notifyAction)
+        actionSheet.addAction(cancelAction)
+
+        present(actionSheet, animated: true)
+    }
+    
+    private func openReadVC(for characteristic: CBCharacteristic) {
+        let readVC = ReadDataVC(nibName: "ReadDataVC", bundle: nil)
+        readVC.selectedDevice = selectedDevice
+        readVC.characteristic = characteristic
+        navigationController?.pushViewController(readVC, animated: true)
+    }
+
+    private func openNotifyVC(for characteristic: CBCharacteristic) {
+        let notifyVC = NotifyDataVC(nibName: "NotifyDataVC", bundle: nil)
+        notifyVC.selectedDevice = selectedDevice
+        notifyVC.characteristic = characteristic
+        navigationController?.pushViewController(notifyVC, animated: true)
     }
     
    }

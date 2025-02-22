@@ -10,6 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NotifyDataVC" customModule="BLEApp" customModuleProvider="target">
             <connections>
+                <outlet property="decodedData" destination="lOf-Uz-NgZ" id="jUb-Tl-EDR"/>
                 <outlet property="textView" destination="oKq-z7-7Oy" id="dBb-U0-6h9"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -26,13 +27,34 @@
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="No decoded data." textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="lOf-Uz-NgZ">
+                    <rect key="frame" x="16" y="544" width="361" height="202"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <color key="textColor" systemColor="labelColor"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                </textView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tI5-oM-0pG">
+                    <rect key="frame" x="16" y="544" width="361" height="1"/>
+                    <color key="backgroundColor" systemColor="systemGray3Color"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="wVZ-xi-GtK"/>
+                    </constraints>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="oKq-z7-7Oy" secondAttribute="bottom" constant="282" id="FR4-It-0BB"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="lOf-Uz-NgZ" secondAttribute="bottom" constant="72" id="NWH-3r-zlD"/>
+                <constraint firstItem="lOf-Uz-NgZ" firstAttribute="top" secondItem="oKq-z7-7Oy" secondAttribute="bottom" constant="8" symbolic="YES" id="Vvr-YG-fUZ"/>
                 <constraint firstItem="oKq-z7-7Oy" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="YU0-Tj-P93"/>
+                <constraint firstItem="tI5-oM-0pG" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="kJv-hS-CBA"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="tI5-oM-0pG" secondAttribute="trailing" constant="16" id="nbI-D2-acq"/>
+                <constraint firstItem="tI5-oM-0pG" firstAttribute="top" secondItem="oKq-z7-7Oy" secondAttribute="bottom" constant="8" symbolic="YES" id="oEF-Xq-hwh"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="lOf-Uz-NgZ" secondAttribute="trailing" constant="16" id="uls-fm-dDL"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="oKq-z7-7Oy" secondAttribute="trailing" constant="16" id="vNs-BZ-NZP"/>
+                <constraint firstItem="lOf-Uz-NgZ" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="wrf-ZP-cQQ"/>
                 <constraint firstItem="oKq-z7-7Oy" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="70" id="z7k-yE-pCK"/>
             </constraints>
             <point key="canvasLocation" x="-153.43511450381678" y="-12.67605633802817"/>
@@ -44,6 +66,9 @@
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray3Color">
+            <color red="0.78039215689999997" green="0.78039215689999997" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
