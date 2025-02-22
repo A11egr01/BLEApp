@@ -142,6 +142,11 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
         // ✅ Ensure cell is initialized with .subtitle style
         let cell = tableView.dequeueReusableCell(withIdentifier: "DetailCell")
             ?? UITableViewCell(style: .subtitle, reuseIdentifier: "DetailCell")
+        
+        cell.textLabel?.text = nil
+        cell.detailTextLabel?.text = nil
+        cell.detailTextLabel?.attributedText = nil
+        cell.accessoryType = .none
 
         if indexPath.section == 0 {
             let keys = Array(selectedDevice.advertisementData.keys)
@@ -156,6 +161,8 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
             // ✅ Show extra service details in detailTextLabel
             if let serviceName = knownServices[service.uuid.uuidString] {
                 cell.detailTextLabel?.text = "🛠 \(serviceName)"
+            } else {
+                cell.detailTextLabel?.text = ""
             }
 
             cell.accessoryType = .disclosureIndicator
@@ -170,6 +177,8 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
             // ✅ Show extra characteristic details in detailTextLabel
             if let characteristicName = knownCharacteristics[characteristic.uuid.uuidString] {
                 cell.detailTextLabel?.text = "🛠 \(characteristicName)"
+            } else {
+                cell.detailTextLabel?.text = ""
             }
             
             if characteristic.uuid.uuidString == "2A19" {  // Battery Level Characteristic
