@@ -33,6 +33,8 @@
 		8E0E92DC2D68ED53008BF11D /* DeviceInfoVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E0E92DA2D68ED53008BF11D /* DeviceInfoVC.xib */; };
 		8E74CC962D6B085A004CF10D /* UARTDeviceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E74CC942D6B085A004CF10D /* UARTDeviceVC.swift */; };
 		8E74CC972D6B085A004CF10D /* UARTDeviceVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E74CC952D6B085A004CF10D /* UARTDeviceVC.xib */; };
+		8E74CC9A2D6B2E66004CF10D /* BLEInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E74CC982D6B2E66004CF10D /* BLEInfoVC.swift */; };
+		8E74CC9B2D6B2E66004CF10D /* BLEInfoVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E74CC992D6B2E66004CF10D /* BLEInfoVC.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +85,8 @@
 		8E0E92DA2D68ED53008BF11D /* DeviceInfoVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DeviceInfoVC.xib; sourceTree = "<group>"; };
 		8E74CC942D6B085A004CF10D /* UARTDeviceVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UARTDeviceVC.swift; sourceTree = "<group>"; };
 		8E74CC952D6B085A004CF10D /* UARTDeviceVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UARTDeviceVC.xib; sourceTree = "<group>"; };
+		8E74CC982D6B2E66004CF10D /* BLEInfoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEInfoVC.swift; sourceTree = "<group>"; };
+		8E74CC992D6B2E66004CF10D /* BLEInfoVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BLEInfoVC.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +158,8 @@
 				8E0445712D68C3B200E47555 /* BLEDeviceCell.swift */,
 				8E0445722D68C3B200E47555 /* BLEDeviceCell.xib */,
 				8E0445752D68C75100E47555 /* knownManufacturers.swift */,
+				8E74CC982D6B2E66004CF10D /* BLEInfoVC.swift */,
+				8E74CC992D6B2E66004CF10D /* BLEInfoVC.xib */,
 				8E0445442D68C0B500E47555 /* Assets.xcassets */,
 				8E0445462D68C0B500E47555 /* LaunchScreen.storyboard */,
 				8E0445492D68C0B500E47555 /* Info.plist */,
@@ -287,6 +293,7 @@
 				8E74CC972D6B085A004CF10D /* UARTDeviceVC.xib in Resources */,
 				8E0E92DC2D68ED53008BF11D /* DeviceInfoVC.xib in Resources */,
 				8E0445482D68C0B500E47555 /* LaunchScreen.storyboard in Resources */,
+				8E74CC9B2D6B2E66004CF10D /* BLEInfoVC.xib in Resources */,
 				8E0445452D68C0B500E47555 /* Assets.xcassets in Resources */,
 				8E0E92D42D68E327008BF11D /* NotifyDataVC.xib in Resources */,
 				8E0E92D82D68EBB4008BF11D /* ReadDataVC.xib in Resources */,
@@ -316,6 +323,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8E74CC9A2D6B2E66004CF10D /* BLEInfoVC.swift in Sources */,
 				8E0E92DB2D68ED53008BF11D /* DeviceInfoVC.swift in Sources */,
 				8E04456D2D68C0ED00E47555 /* BL_VC.swift in Sources */,
 				8E0445802D68CE8800E47555 /* BLEDevice.swift in Sources */,

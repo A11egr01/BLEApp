@@ -34,7 +34,7 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         sendButton.isEnabled = false
 
         refreshControl.addTarget(self, action: #selector(refreshBLEData), for: .valueChanged)
-        tableView.refreshControl = refreshControl
+//        tableView.refreshControl = refreshControl
         
         selectedDevice.peripheral.delegate = self
         selectedDevice.peripheral.discoverServices(nil)
@@ -43,6 +43,15 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
            tapGesture.cancelsTouchesInView = false  // Allows tableView selection
            view.addGestureRecognizer(tapGesture)
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Info", style: .plain, target: self, action: #selector(showBLEInfo))
+
+    }
+    
+    @objc func showBLEInfo() {
+        let infoVC = BLEInfoVC()
+        let navController = UINavigationController(rootViewController: infoVC)
+        present(navController, animated: true)
     }
     
     @objc private func dismissKeyboard() {
@@ -157,8 +166,14 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
 
         let translatedData = translateCharacteristicValue(data: data)
         let hexData = data.map { String(format: "%02X", $0) }.joined(separator: " ")
-        
-        let receivedMessage = "📡 Received: \(translatedData) (\(hexData))"
+
+        // ✅ Extract last 4 characters of UUID
+        let characteristicID = String(characteristic.uuid.uuidString.suffix(4))
+
+        // ✅ Get associated emoji for the characteristic
+        let characteristicEmoji = getEmojiForCharacteristic(characteristicID)
+
+        let receivedMessage = "📡 \(characteristicEmoji) [\(characteristicID)] Received: \(translatedData) (\(hexData))"
         print(receivedMessage)
 
         DispatchQueue.main.async {
