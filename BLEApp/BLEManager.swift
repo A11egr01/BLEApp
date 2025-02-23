@@ -65,6 +65,7 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
             // ✅ Start connecting to fetch services for known devices
             centralManager.connect(peripheral, options: nil)
             peripheral.delegate = self
+            
         }
 
         DispatchQueue.main.async {

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreBluetooth
 
 let knownManufacturers: [String: String] = [
     "4C 00": "Apple Inc.",             // AirPods, iPhones, MacBooks
@@ -108,4 +109,35 @@ func getEmojiForCharacteristic(_ characteristicID: String) -> String {
     ]
 
     return emojiMapping[characteristicID] ?? "🔹" // Default Emoji
+}
+ 
+func isUARTDevice(_ peripheral: CBPeripheral) -> Bool {
+    let uartServices: Set<CBUUID> = [
+        CBUUID(string: "0001"),
+        CBUUID(string: "FFE0"),
+        CBUUID(string: "49535343-FE7D-4AE5-8FA9-9FAFD205E455"),
+        CBUUID(string: "6E400001-B5A3-F393-E0A9-E50E24DCCA9E")
+    ]
+    
+    let uartCharacteristics: Set<CBUUID> = [
+        CBUUID(string: "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"),  // TX (Write)
+        CBUUID(string: "6E400003-B5A3-F393-E0A9-E50E24DCCA9E")   // RX (Notify)
+    ]
+    
+    // ✅ First, check if it has a known UART service
+    if let services = peripheral.services, services.contains(where: { uartServices.contains($0.uuid) }) {
+        return true
+    }
+    
+    // ✅ Then, check if it has both TX (write) and RX (notify) characteristics
+    if let services = peripheral.services {
+        for service in services {
+            if let characteristics = service.characteristics,
+               characteristics.contains(where: { uartCharacteristics.contains($0.uuid) }) {
+                return true
+            }
+        }
+    }
+    
+    return false
 }

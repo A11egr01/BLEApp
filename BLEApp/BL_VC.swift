@@ -112,6 +112,15 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
             device.uart = false
         }
         
+        if isUARTDevice(device.peripheral) {
+            cell.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.2)
+            device.uart = true
+        } else {
+            cell.backgroundColor = device.services.isEmpty ? .white : UIColor(white: 0.96, alpha: 1.0)
+            device.uart = true
+
+        }
+        
         // ✅ Now, we just pass the BLEDevice object
         cell.configure(with: device)
 
