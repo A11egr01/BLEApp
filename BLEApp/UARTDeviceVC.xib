@@ -10,6 +10,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UARTDeviceVC" customModule="BLEApp" customModuleProvider="target">
             <connections>
+                <outlet property="listenSwitch" destination="xvn-Wb-ydw" id="i8Z-Sp-dHm"/>
+                <outlet property="listeningLabel" destination="hZF-I5-AW9" id="1rI-i4-00a"/>
                 <outlet property="responseTextView" destination="FK7-E6-0rv" id="ZBh-29-iSB"/>
                 <outlet property="sendButton" destination="R9B-FI-WhN" id="4pf-Ua-bwI"/>
                 <outlet property="sendTextField" destination="hkC-Ko-4nA" id="Rtt-x1-zsO"/>
@@ -67,6 +69,23 @@
                     <color key="textColor" systemColor="opaqueSeparatorColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Listening to:" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="hZF-I5-AW9">
+                    <rect key="frame" x="16" y="788" width="284" height="30"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xvn-Wb-ydw">
+                    <rect key="frame" x="302" y="783" width="76" height="35"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="76" id="qjk-3t-Lby"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" title="Switch"/>
+                    <connections>
+                        <action selector="listenSwitchTapped:" destination="-1" eventType="touchUpInside" id="dot-tT-5Ni"/>
+                    </connections>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -75,19 +94,25 @@
                 <constraint firstItem="hkC-Ko-4nA" firstAttribute="top" secondItem="W40-LE-Qfq" secondAttribute="bottom" constant="8" symbolic="YES" id="7uB-El-uHR"/>
                 <constraint firstItem="KYK-1B-Rvd" firstAttribute="top" secondItem="LAD-1Y-XqD" secondAttribute="bottom" constant="8" symbolic="YES" id="A6N-lp-yVP"/>
                 <constraint firstItem="KYK-1B-Rvd" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="16" id="CPl-a7-Pak"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="xvn-Wb-ydw" secondAttribute="trailing" constant="15" id="Dtk-KK-7GN"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="FK7-E6-0rv" secondAttribute="trailing" constant="16" id="Fc3-Tf-pYN"/>
                 <constraint firstItem="FK7-E6-0rv" firstAttribute="top" secondItem="KYK-1B-Rvd" secondAttribute="bottom" constant="8" symbolic="YES" id="GfY-an-f08"/>
                 <constraint firstItem="R9B-FI-WhN" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="53" id="I1R-6Y-D6A"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="W40-LE-Qfq" secondAttribute="trailing" constant="16" id="IBJ-L3-h8R"/>
                 <constraint firstItem="LAD-1Y-XqD" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="ODZ-o5-5cY"/>
+                <constraint firstItem="xvn-Wb-ydw" firstAttribute="leading" secondItem="hZF-I5-AW9" secondAttribute="trailing" constant="2" id="R2t-Jd-WDy"/>
                 <constraint firstItem="R9B-FI-WhN" firstAttribute="leading" secondItem="hkC-Ko-4nA" secondAttribute="trailing" constant="10" id="SKn-AJ-caS"/>
                 <constraint firstItem="FK7-E6-0rv" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="SUU-uF-dFC"/>
                 <constraint firstAttribute="trailing" secondItem="KYK-1B-Rvd" secondAttribute="trailing" constant="16" id="Ubb-oZ-An7"/>
+                <constraint firstItem="hZF-I5-AW9" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="Uu6-Zr-ucA"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="R9B-FI-WhN" secondAttribute="trailing" constant="36" id="jtH-iE-ZNb"/>
+                <constraint firstItem="hZF-I5-AW9" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="kah-mY-JOG"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="LAD-1Y-XqD" secondAttribute="trailing" constant="16" id="ki7-Ny-O7W"/>
                 <constraint firstItem="hkC-Ko-4nA" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="p5i-06-4Zi"/>
+                <constraint firstItem="hZF-I5-AW9" firstAttribute="top" secondItem="FK7-E6-0rv" secondAttribute="bottom" id="qbt-Gh-Sf6"/>
                 <constraint firstItem="LAD-1Y-XqD" firstAttribute="top" secondItem="hkC-Ko-4nA" secondAttribute="bottom" constant="16" id="qdt-Qr-J3x"/>
                 <constraint firstItem="W40-LE-Qfq" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="rBy-vn-00U"/>
+                <constraint firstItem="xvn-Wb-ydw" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="wm4-3D-S5m"/>
                 <constraint firstItem="hkC-Ko-4nA" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="54" id="zjr-Bv-5nq"/>
             </constraints>
             <point key="canvasLocation" x="26.717557251908396" y="19.718309859154932"/>
