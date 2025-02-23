@@ -21,7 +21,7 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
            
            tableView.dataSource = self
            tableView.delegate = self
-           title = selectedDevice.peripheral.name ?? "BLE Device"
+           title = (selectedDevice.peripheral.name ?? "BLE Device") + " | GATT"
            
            // ✅ Register the cell to prevent crashes
 //           tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DetailCell")
