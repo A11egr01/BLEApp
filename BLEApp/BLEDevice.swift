@@ -15,7 +15,7 @@ class BLEDevice {
     var advertisementData: [String: Any]
     var services: [CBService] = []  // Stores discovered services
     var characteristics: [CBService: [CBCharacteristic]] = [:]  // Maps each service to its characteristics
-    
+    var uart = false
     var batteryLevel: Int?  // ✅ Battery Level (0-100%)
     var readValues: [CBUUID: String] = [:]  // ✅ Stores read characteristic values
     var lastSeenTimestamp: TimeInterval?  // ✅ Store kCBAdvDataTimestamp

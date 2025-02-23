@@ -103,10 +103,29 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
         let device = filteredDevices[indexPath.row]
         cell.backgroundColor = device.services.isEmpty ? .white : UIColor(white: 0.96, alpha: 1.0)
         
+        // ✅ Check if the device has a UART service
+        if device.services.contains(where: { isUARTService($0.uuid) }) {
+            cell.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.2)  // Light blue for UART devices
+            device.uart = true
+        } else {
+            cell.backgroundColor = device.services.isEmpty ? .white : UIColor(white: 0.96, alpha: 1.0)
+            device.uart = false
+        }
+        
         // ✅ Now, we just pass the BLEDevice object
         cell.configure(with: device)
 
         return cell
+    }
+    
+    private func isUARTService(_ uuid: CBUUID) -> Bool {
+        let uartServices: [CBUUID] = [
+            CBUUID(string: "0001"), // Some modules use this
+            CBUUID(string: "FFE0"), // TI CC254x
+            CBUUID(string: "49535343-FE7D-4AE5-8FA9-9FAFD205E455"), // HM-10
+            CBUUID(string: "6E400001-B5A3-F393-E0A9-E50E24DCCA9E") // Nordic UART Service (NUS)
+        ]
+        return uartServices.contains(uuid)
     }
 
         // ✅ Setup Bluetooth Icon Inside `radarView`

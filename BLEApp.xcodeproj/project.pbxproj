@@ -31,6 +31,8 @@
 		8E0E92D82D68EBB4008BF11D /* ReadDataVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E0E92D62D68EBB4008BF11D /* ReadDataVC.xib */; };
 		8E0E92DB2D68ED53008BF11D /* DeviceInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E92D92D68ED53008BF11D /* DeviceInfoVC.swift */; };
 		8E0E92DC2D68ED53008BF11D /* DeviceInfoVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E0E92DA2D68ED53008BF11D /* DeviceInfoVC.xib */; };
+		8E74CC962D6B085A004CF10D /* UARTDeviceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E74CC942D6B085A004CF10D /* UARTDeviceVC.swift */; };
+		8E74CC972D6B085A004CF10D /* UARTDeviceVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E74CC952D6B085A004CF10D /* UARTDeviceVC.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +81,8 @@
 		8E0E92D62D68EBB4008BF11D /* ReadDataVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReadDataVC.xib; sourceTree = "<group>"; };
 		8E0E92D92D68ED53008BF11D /* DeviceInfoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoVC.swift; sourceTree = "<group>"; };
 		8E0E92DA2D68ED53008BF11D /* DeviceInfoVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DeviceInfoVC.xib; sourceTree = "<group>"; };
+		8E74CC942D6B085A004CF10D /* UARTDeviceVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UARTDeviceVC.swift; sourceTree = "<group>"; };
+		8E74CC952D6B085A004CF10D /* UARTDeviceVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UARTDeviceVC.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +147,8 @@
 				8E0E92DA2D68ED53008BF11D /* DeviceInfoVC.xib */,
 				8E0E92D12D68E327008BF11D /* NotifyDataVC.swift */,
 				8E0E92D22D68E327008BF11D /* NotifyDataVC.xib */,
+				8E74CC942D6B085A004CF10D /* UARTDeviceVC.swift */,
+				8E74CC952D6B085A004CF10D /* UARTDeviceVC.xib */,
 				8E0445412D68C0B000E47555 /* Main.storyboard */,
 				8E04457F2D68CE8800E47555 /* BLEDevice.swift */,
 				8E0445712D68C3B200E47555 /* BLEDeviceCell.swift */,
@@ -278,6 +284,7 @@
 			files = (
 				8E0445742D68C3B200E47555 /* BLEDeviceCell.xib in Resources */,
 				8E04456E2D68C0ED00E47555 /* BL_VC.xib in Resources */,
+				8E74CC972D6B085A004CF10D /* UARTDeviceVC.xib in Resources */,
 				8E0E92DC2D68ED53008BF11D /* DeviceInfoVC.xib in Resources */,
 				8E0445482D68C0B500E47555 /* LaunchScreen.storyboard in Resources */,
 				8E0445452D68C0B500E47555 /* Assets.xcassets in Resources */,
@@ -314,6 +321,7 @@
 				8E0445802D68CE8800E47555 /* BLEDevice.swift in Sources */,
 				8E0445402D68C0B000E47555 /* ViewController.swift in Sources */,
 				8E0E92D32D68E327008BF11D /* NotifyDataVC.swift in Sources */,
+				8E74CC962D6B085A004CF10D /* UARTDeviceVC.swift in Sources */,
 				8E0445702D68C30B00E47555 /* BLEManager.swift in Sources */,
 				8E04453C2D68C0B000E47555 /* AppDelegate.swift in Sources */,
 				8E04453E2D68C0B000E47555 /* SceneDelegate.swift in Sources */,

@@ -34,9 +34,7 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
            selectedDevice.peripheral.delegate = self
            selectedDevice.peripheral.discoverServices(nil)
            
-           if isAirPods(selectedDevice.peripheral) {
-               navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Alert", style: .plain, target: self, action: #selector(sendAlertToAirPods))
-           }
+               navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Try UART", style: .plain, target: self, action: #selector(tryUart))
        }
     
     /// 🏷️ Get characteristic properties as a readable string
@@ -75,6 +73,12 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
     private func isAirPods(_ peripheral: CBPeripheral) -> Bool {
         guard let name = peripheral.name else { return false }
         return name.contains("Allegro") || name.contains("AirPods") || name.contains("AirPods Max")
+    }
+    
+    @objc private func tryUart() {
+        let vc = UARTDeviceVC()
+        vc.selectedDevice = selectedDevice
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     /// 🔔 Send an alert signal to AirPods (Find My sound)
