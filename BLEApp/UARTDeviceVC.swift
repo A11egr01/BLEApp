@@ -108,60 +108,67 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-          if let error = error {
-              let errorMessage = "❌ Characteristic Discovery Error: \(error.localizedDescription)"
-              print(errorMessage)
-              DispatchQueue.main.async {
-                  self.statusLabel.text = errorMessage
-              }
-              return
-          }
-          
-          guard let characteristics = service.characteristics else { return }
-          selectedDevice.characteristics[service] = characteristics
+        if let error = error {
+            let errorMessage = "❌ Characteristic Discovery Error: \(error.localizedDescription)"
+            print(errorMessage)
+            DispatchQueue.main.async {
+                self.statusLabel.text = errorMessage
+            }
+            return
+        }
+        
+        guard let characteristics = service.characteristics else { return }
+        selectedDevice.characteristics[service] = characteristics
 
-          // Gather eligible "listen" characteristics (those with notify/indicate support)
-          var eligibleRxChars: [CBCharacteristic] = []
-          
-          for characteristic in characteristics {
-              let foundMessage = "🔍 Found Characteristic: \(characteristic.uuid.uuidString)"
-              print(foundMessage)
-              DispatchQueue.main.async {
-                  self.statusLabel.text = foundMessage
-              }
+        // Prepare an array to gather eligible notification characteristics.
+        var eligibleRxChars: [CBCharacteristic] = []
+        
+        for characteristic in characteristics {
+            let foundMessage = "🔍 Found Characteristic: \(characteristic.uuid.uuidString)"
+            print(foundMessage)
+            DispatchQueue.main.async {
+                self.statusLabel.text = foundMessage
+            }
+            
+            // If the characteristic supports write operations, add it to your list.
+            if characteristic.properties.contains(.writeWithoutResponse) || characteristic.properties.contains(.write) {
+                writeCharacteristics.append(characteristic)
+                let txMessage = "✅ Writable Characteristic: \(characteristic.uuid.uuidString)"
+                print(txMessage)
+                DispatchQueue.main.async {
+                    self.statusLabel.text = txMessage
+                    self.sendButton.isEnabled = true  // Enable send button
+                }
+            }
+            
+            // If the characteristic supports notifications, add it to eligible list.
+            if characteristic.properties.contains(.notify) || characteristic.properties.contains(.indicate) {
+                eligibleRxChars.append(characteristic)
+            }
+            
+            // NEW: If the characteristic is readable, trigger a read.
+            if characteristic.properties.contains(.read) {
+                print("📖 Requesting read for characteristic \(characteristic.uuid.uuidString)...")
+                peripheral.readValue(for: characteristic)
+            }
+        }
+        
+        // If no rxCharacteristic is selected yet, set the first eligible notification characteristic.
+        if rxCharacteristic == nil, let firstEligible = eligibleRxChars.first {
+            rxCharacteristic = firstEligible
+            peripheral.setNotifyValue(true, for: firstEligible)
+            let rxMessage = "✅ RX Characteristic Enabled: \(firstEligible.uuid.uuidString)"
+            print(rxMessage)
+            DispatchQueue.main.async {
+                self.statusLabel.text = rxMessage
+            }
+        }
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
 
-              // ✅ Handle writable characteristics
-              if characteristic.properties.contains(.writeWithoutResponse) || characteristic.properties.contains(.write) {
-                  writeCharacteristics.append(characteristic)
-                  let txMessage = "✅ Writable Characteristic: \(characteristic.uuid.uuidString)"
-                  print(txMessage)
-                  DispatchQueue.main.async {
-                      self.statusLabel.text = txMessage
-                      self.sendButton.isEnabled = true  // Enable send button
-                  }
-              }
-
-              // ✅ Gather characteristics eligible for notifications
-              if characteristic.properties.contains(.notify) || characteristic.properties.contains(.indicate) {
-                  eligibleRxChars.append(characteristic)
-              }
-          }
-          
-          // If no rxCharacteristic is selected yet, set the first eligible one.
-          if rxCharacteristic == nil, let firstEligible = eligibleRxChars.first {
-              rxCharacteristic = firstEligible
-              peripheral.setNotifyValue(true, for: firstEligible)
-              let rxMessage = "✅ RX Characteristic Enabled: \(firstEligible.uuid.uuidString)"
-              print(rxMessage)
-              DispatchQueue.main.async {
-                  self.statusLabel.text = rxMessage
-              }
-          }
-          
-          DispatchQueue.main.async {
-              self.tableView.reloadData()
-          }
-      }
 
     /// 📡 **Receive UART Data**
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
@@ -176,7 +183,14 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
 
         guard let data = characteristic.value else { return }
 
-        let translatedData = translateCharacteristicValue(data: data)
+        var translatedData = translateCharacteristicValue(data: data)
+        
+        if characteristic.uuid.uuidString.uppercased() == "2A19", data.count == 1 {
+              translatedData = "\(data[0])%"
+          } else {
+              translatedData = translateCharacteristicValue(data: data)
+          }
+        
         let hexData = data.map { String(format: "%02X", $0) }.joined(separator: " ")
 
         // ✅ Extract last 4 characters of UUID
@@ -184,8 +198,9 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
 
         // ✅ Get associated emoji for the characteristic
         let characteristicEmoji = getEmojiForCharacteristic(characteristicID)
+        let readMarker = characteristic.properties.contains(.read) ? "📖" : ""
 
-        let receivedMessage = "📡 \(characteristicEmoji) [\(characteristicID)] Received: \(translatedData) (\(hexData))"
+        let receivedMessage = "📡 \(characteristicEmoji) \(readMarker) [\(characteristicID)] Received: \(translatedData) (\(hexData))"
         print(receivedMessage)
 
         DispatchQueue.main.async {
