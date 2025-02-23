@@ -77,6 +77,7 @@ class DeviceDetailsVC: UIViewController, UITableViewDataSource, UITableViewDeleg
     
     @objc private func tryUart() {
         let vc = UARTDeviceVC()
+        vc.title = (selectedDevice.peripheral.name ?? "") + "| UART"
         vc.selectedDevice = selectedDevice
         self.navigationController?.pushViewController(vc, animated: true)
     }

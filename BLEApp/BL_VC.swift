@@ -36,6 +36,7 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
             tableView.refreshControl = refreshControl
             
             self.navigationItem.hidesBackButton = true
+            toggle.insertSegment(withTitle: "iPhones", at: 2, animated: false)
 
             // ✅ Set up segmented control action
             toggle.addTarget(self, action: #selector(segmentedControlChanged), for: .valueChanged)
@@ -57,11 +58,21 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
         }
         
         private func applyFilter() {
-            if toggle.selectedSegmentIndex == 0 {
-                filteredDevices = devices.filter { $0.peripheral.name != nil }
-            } else {
-                filteredDevices = devices.filter { $0.peripheral.name == nil }
-            }
+            switch toggle.selectedSegmentIndex {
+                    case 0:
+                filteredDevices = devices.filter {
+                            guard let name = $0.peripheral.name else { return false }
+                            return !(name.contains("iPhone") || name.contains("iPad") || name.contains("iMac") || name.contains("Mac"))
+                        }                    case 1:
+                        filteredDevices = devices.filter { $0.peripheral.name == nil }
+                    case 2:  // iPhones Filter
+                        filteredDevices = devices.filter {
+                            guard let name = $0.peripheral.name else { return false }
+                            return name.contains("iPhone") || name.contains("iPad") || name.contains("iMac") || name.contains("Mac")
+                        }
+                    default:
+                        break
+                    }
             tableView.reloadData()
         }
 

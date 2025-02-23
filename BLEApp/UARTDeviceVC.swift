@@ -26,7 +26,7 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "UART Terminal"
+//        title = "UART Terminal"
         
         tableView.dataSource = self
         tableView.delegate = self
