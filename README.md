@@ -3,7 +3,7 @@
 
 A **Swift-based iOS app** that scans, connects, and interacts with **Bluetooth Low Energy (BLE) devices**. Built using **CoreBluetooth**, this app provides a smooth and interactive experience for discovering, filtering, and managing BLE devices, including UART communication and device details.
 
-![Screenshot](path-to-your-screenshot.png) <!-- Replace with actual image path -->
+![Screenshot](https://github.com/A11egr01/BLEApp/blob/main/Screens/Logo.heic) <!-- Replace with actual image path -->
 
 ## 📌 Features
 
@@ -49,7 +49,7 @@ cd BLE-Scanner
 
 | **Scanning for Devices** | **Device Details** | **UART Console** |
 |---|---|---|
-| ![Scan](path-to-your-image1.png) | ![Details](path-to-your-image2.png) | ![UART](path-to-your-image3.png) |
+| ![Scan](https://github.com/A11egr01/BLEApp/blob/main/Screens/Home.PNG) | ![UART](https://github.com/A11egr01/BLEApp/blob/main/Screens/UART.PNG) | ![GATT](https://github.com/A11egr01/BLEApp/blob/main/Screens/GATT.PNG) |
 
 ---
 
