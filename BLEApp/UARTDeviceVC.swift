@@ -18,6 +18,7 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
 
     @IBOutlet weak var listenSwitch: UIButton!
     @IBOutlet weak var listeningLabel: UILabel!
+    
     var selectedDevice: BLEDevice!
     let refreshControl = UIRefreshControl()
     

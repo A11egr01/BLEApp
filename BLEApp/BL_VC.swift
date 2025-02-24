@@ -78,7 +78,8 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
 
         func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
             let selectedDevice = filteredDevices[indexPath.row]
-            let detailsVC = UARTDeviceVC()
+            let detailsVC = MethodSwitcherVC()
+            detailsVC.title = selectedDevice.peripheral.name ?? "No name"
             detailsVC.selectedDevice = selectedDevice
             navigationController?.pushViewController(detailsVC, animated: true)
         }

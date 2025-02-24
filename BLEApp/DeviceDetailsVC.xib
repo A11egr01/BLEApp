@@ -20,10 +20,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="tXt-88-ZEh">
-                    <rect key="frame" x="16" y="117" width="361" height="664"/>
+                    <rect key="frame" x="16" y="69" width="361" height="712"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </tableView>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Daa-pc-PQL">
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Daa-pc-PQL">
                     <rect key="frame" x="24" y="59" width="361" height="50"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
@@ -34,7 +34,7 @@
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="tXt-88-ZEh" firstAttribute="top" secondItem="Daa-pc-PQL" secondAttribute="bottom" constant="8" symbolic="YES" id="1Hk-bB-VWz"/>
+                <constraint firstItem="tXt-88-ZEh" firstAttribute="top" secondItem="Daa-pc-PQL" secondAttribute="bottom" constant="-40" id="1Hk-bB-VWz"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="Daa-pc-PQL" secondAttribute="trailing" constant="8" id="8qW-Vu-hn5"/>
                 <constraint firstItem="Daa-pc-PQL" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="KVH-rN-r1G"/>
                 <constraint firstItem="Daa-pc-PQL" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="24" id="faq-3Y-BaM"/>
