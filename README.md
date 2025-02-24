@@ -69,8 +69,8 @@ cd BLE-Scanner
 - Tap a device to connect.
 - The app fetches **services & characteristics** and displays them in the **Device Details** view.
 
-### 🖥 Switching Views (UART & Details)
-- The **Segmented Control** at the top allows you to **switch between UART communication and device details**.
+### 🖥 Switching Views (UART & GATT)
+- The **Segmented Control** at the top allows you to **switch between UART communication and GATT details**.
 
 ---
 
