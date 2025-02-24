@@ -35,8 +35,8 @@
 		8E74CC972D6B085A004CF10D /* UARTDeviceVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E74CC952D6B085A004CF10D /* UARTDeviceVC.xib */; };
 		8E74CC9A2D6B2E66004CF10D /* BLEInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E74CC982D6B2E66004CF10D /* BLEInfoVC.swift */; };
 		8E74CC9B2D6B2E66004CF10D /* BLEInfoVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E74CC992D6B2E66004CF10D /* BLEInfoVC.xib */; };
-		8ED2B6A12D6C91F00041C6E5 /* MethodSwitcherVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED2B69F2D6C91F00041C6E5 /* MethodSwitcherVC.swift */; };
 		8ED2B6A22D6C91F00041C6E5 /* MethodSwitcherVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8ED2B6A02D6C91F00041C6E5 /* MethodSwitcherVC.xib */; };
+		8ED2B6A42D6CD98D0041C6E5 /* MethodSwitcherVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED2B6A32D6CD98D0041C6E5 /* MethodSwitcherVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,8 +89,8 @@
 		8E74CC952D6B085A004CF10D /* UARTDeviceVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UARTDeviceVC.xib; sourceTree = "<group>"; };
 		8E74CC982D6B2E66004CF10D /* BLEInfoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEInfoVC.swift; sourceTree = "<group>"; };
 		8E74CC992D6B2E66004CF10D /* BLEInfoVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BLEInfoVC.xib; sourceTree = "<group>"; };
-		8ED2B69F2D6C91F00041C6E5 /* MethodSwitcherVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MethodSwitcherVC.swift; path = ../MethodSwitcherVC.swift; sourceTree = "<group>"; };
 		8ED2B6A02D6C91F00041C6E5 /* MethodSwitcherVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MethodSwitcherVC.xib; sourceTree = "<group>"; };
+		8ED2B6A32D6CD98D0041C6E5 /* MethodSwitcherVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MethodSwitcherVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,7 +157,7 @@
 				8E0E92D22D68E327008BF11D /* NotifyDataVC.xib */,
 				8E74CC942D6B085A004CF10D /* UARTDeviceVC.swift */,
 				8E74CC952D6B085A004CF10D /* UARTDeviceVC.xib */,
-				8ED2B69F2D6C91F00041C6E5 /* MethodSwitcherVC.swift */,
+				8ED2B6A32D6CD98D0041C6E5 /* MethodSwitcherVC.swift */,
 				8ED2B6A02D6C91F00041C6E5 /* MethodSwitcherVC.xib */,
 				8E0445412D68C0B000E47555 /* Main.storyboard */,
 				8E04457F2D68CE8800E47555 /* BLEDevice.swift */,
@@ -332,7 +332,7 @@
 			files = (
 				8E74CC9A2D6B2E66004CF10D /* BLEInfoVC.swift in Sources */,
 				8E0E92DB2D68ED53008BF11D /* DeviceInfoVC.swift in Sources */,
-				8ED2B6A12D6C91F00041C6E5 /* MethodSwitcherVC.swift in Sources */,
+				8ED2B6A42D6CD98D0041C6E5 /* MethodSwitcherVC.swift in Sources */,
 				8E04456D2D68C0ED00E47555 /* BL_VC.swift in Sources */,
 				8E0445802D68CE8800E47555 /* BLEDevice.swift in Sources */,
 				8E0445402D68C0B000E47555 /* ViewController.swift in Sources */,

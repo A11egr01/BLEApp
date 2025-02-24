@@ -31,7 +31,7 @@ A **Swift-based iOS app** that scans, connects, and interacts with **Bluetooth L
 
 ### 1️⃣ Clone the Repository:
 ```bash
-git clone https://github.com/yourusername/BLE-Scanner.git
+git clone https://github.com/A11egr01/BLE-Scanner.git
 cd BLE-Scanner
 ```
 
