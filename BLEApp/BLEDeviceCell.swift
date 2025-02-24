@@ -16,8 +16,13 @@ class BLEDeviceCell: UITableViewCell {
     @IBOutlet weak var manufacturerLabel: UILabel!
     
     
-    func configure(with device: BLEDevice) {
+    func configure(with device: BLEDevice, connected: Bool = false) {
         deviceNameLabel.text = device.peripheral.name ?? "Unknown Device"
+        if connected {
+            deviceNameLabel.text = (deviceNameLabel.text ?? "") + " 🔹"
+        } else {
+            deviceNameLabel.text = (deviceNameLabel.text ?? "") + ""
+        }
         
         if device.manufacturer == "Unknown Manufacturer" {
             manufacturerLabel.text = ""

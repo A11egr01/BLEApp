@@ -132,8 +132,15 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
 
         }
         
+        if bleManager.connectedDevices.contains(where: { $0.peripheral.identifier == device.peripheral.identifier }) {
+            cell.configure(with: device, connected: true)
+        } else {
+            cell.configure(with: device, connected: false)
+            cell.backgroundColor = UIColor.white
+        }
+        
         // ✅ Now, we just pass the BLEDevice object
-        cell.configure(with: device)
+//        cell.configure(with: device)
 
         return cell
     }

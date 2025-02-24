@@ -16,6 +16,7 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
 
     var centralManager: CBCentralManager!
     var discoveredDevices: [BLEDevice] = []
+    var connectedDevices: [BLEDevice] = []
     weak var delegate: BLEManagerDelegate?
 
     override init() {
@@ -94,8 +95,28 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         print("✅ Connected to \(peripheral.name ?? "Unknown Device")")
+        
+        if let device = discoveredDevices.first(where: { $0.peripheral.identifier == peripheral.identifier }) {
+            connectedDevices.append(device)
+        }
+
+        DispatchQueue.main.async {
+            self.delegate?.didUpdateDevices(devices: self.discoveredDevices)
+        }
+        
         peripheral.discoverServices(nil)  // Discover all services
     }
+    
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+         print("❌ Disconnected from \(peripheral.name ?? "Unknown Device")")
+
+         // ✅ Remove the device from connected devices list
+         connectedDevices.removeAll { $0.peripheral.identifier == peripheral.identifier }
+
+         DispatchQueue.main.async {
+             self.delegate?.didUpdateDevices(devices: self.discoveredDevices)
+         }
+     }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         if let error = error {
