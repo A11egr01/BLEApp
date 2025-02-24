@@ -223,10 +223,10 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         var translatedData = translateCharacteristicValue(data: data)
         
         if characteristic.uuid.uuidString.uppercased() == "2A19", data.count == 1 {
-              translatedData = "\(data[0])%"
-          } else {
-              translatedData = translateCharacteristicValue(data: data)
-          }
+            translatedData = "\(data[0])%"
+        } else {
+            translatedData = translateCharacteristicValue(data: data)
+        }
         
         let hexData = data.map { String(format: "%02X", $0) }.joined(separator: " ")
 
@@ -236,6 +236,10 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         // ✅ Get associated emoji for the characteristic
         let characteristicEmoji = getEmojiForCharacteristic(characteristicID)
         let readMarker = characteristic.properties.contains(.read) ? "📖" : ""
+        
+        if translatedData == hexData {
+            translatedData = "RAW: "
+        }
 
         let receivedMessage = "📡 \(characteristicEmoji) \(readMarker) [\(characteristicID)] Received: \(translatedData) (\(hexData))"
         print(receivedMessage)
