@@ -7,47 +7,77 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "3DA02F11-8D6E-431E-B62B-2B7044F5EDE2"
+            uuid = "4F23BB01-7E7E-4EFD-8CD0-3A5D843EA7DD"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BLEApp/DeviceDetailsVC.swift"
+            filePath = "BLEApp/UARTDeviceVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "192"
-            endingLineNumber = "192"
-            landmarkName = "tableView(_:cellForRowAt:)"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
+            landmarkName = "handleDisconnection(_:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "3DA02F11-8D6E-431E-B62B-2B7044F5EDE2 - 1c34755d0b4742b2"
+                  uuid = "4F23BB01-7E7E-4EFD-8CD0-3A5D843EA7DD - 8ac8d02f33955b4c"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "BLEApp.DeviceDetailsVC.tableView(_: __C.UITableView, cellForRowAt: Foundation.IndexPath) -&gt; __C.UITableViewCell"
+                  symbolName = "BLEApp.UARTDeviceVC.refreshBLEData() -&gt; ()"
                   moduleName = "BLEApp"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Allegro/Documents/ARMAS/BLEApp/BLEApp/DeviceDetailsVC.swift"
+                  urlString = "file:///Users/Allegro/Documents/ARMAS/BLEApp/BLEApp/UARTDeviceVC.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "192"
-                  endingLineNumber = "192"
-                  offsetFromSymbolStart = "6872">
+                  startingLineNumber = "81"
+                  endingLineNumber = "81"
+                  offsetFromSymbolStart = "2432">
                </Location>
                <Location
-                  uuid = "3DA02F11-8D6E-431E-B62B-2B7044F5EDE2 - 1c34755d0b4742b2"
+                  uuid = "4F23BB01-7E7E-4EFD-8CD0-3A5D843EA7DD - dcffc71e79266bf4"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "BLEApp.DeviceDetailsVC.tableView(_: __C.UITableView, cellForRowAt: Foundation.IndexPath) -&gt; __C.UITableViewCell"
+                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in BLEApp.UARTDeviceVC.handleDisconnection(Foundation.Notification) -&gt; ()"
                   moduleName = "BLEApp"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Allegro/Documents/ARMAS/BLEApp/BLEApp/DeviceDetailsVC.swift"
+                  urlString = "file:///Users/Allegro/Documents/ARMAS/BLEApp/BLEApp/UARTDeviceVC.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "192"
-                  endingLineNumber = "192"
-                  offsetFromSymbolStart = "6692">
+                  startingLineNumber = "81"
+                  endingLineNumber = "81"
+                  offsetFromSymbolStart = "44">
+               </Location>
+               <Location
+                  uuid = "4F23BB01-7E7E-4EFD-8CD0-3A5D843EA7DD - 56a0b765d325dc94"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BLEApp.UARTDeviceVC.handleDisconnection(Foundation.Notification) -&gt; ()"
+                  moduleName = "BLEApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Allegro/Documents/ARMAS/BLEApp/BLEApp/UARTDeviceVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "81"
+                  endingLineNumber = "81"
+                  offsetFromSymbolStart = "352">
+               </Location>
+               <Location
+                  uuid = "4F23BB01-7E7E-4EFD-8CD0-3A5D843EA7DD - dcffc71e79266bf4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in BLEApp.UARTDeviceVC.handleDisconnection(Foundation.Notification) -&gt; ()"
+                  moduleName = "BLEApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Allegro/Documents/ARMAS/BLEApp/BLEApp/UARTDeviceVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "81"
+                  endingLineNumber = "81"
+                  offsetFromSymbolStart = "32">
                </Location>
             </Locations>
          </BreakpointContent>

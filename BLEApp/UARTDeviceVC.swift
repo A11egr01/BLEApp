@@ -32,7 +32,7 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
 //        title = "UART Terminal"
-        
+        self.title = (selectedDevice.peripheral.name ?? "") + " | UART"
         tableView.dataSource = self
         tableView.delegate = self
         responseTextView.isEditable = false
@@ -50,7 +50,43 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
            view.addGestureRecognizer(tapGesture)
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Info", style: .plain, target: self, action: #selector(showBLEInfo))
-
+        
+        updateConnectionStatus()
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDisconnection(_:)), name: NSNotification.Name("DeviceDisconnected"), object: nil)
+    }
+    
+    private func updateConnectionStatus() {
+        if selectedDevice.peripheral.state == .connected {
+            statusLabel.text = "✅ Connected to \(selectedDevice.peripheral.name ?? "Device")"
+            statusLabel.textColor = .systemGreen
+        } else {
+            statusLabel.text = "❌ Disconnected"
+            statusLabel.textColor = .systemRed
+            handleDisconnection()
+        }
+    }
+    
+    private func updateListeningLabel() {
+        if let rx = rxCharacteristic {
+            let friendlyName = knownCharacteristics[rx.uuid.uuidString] ?? rx.uuid.uuidString
+            DispatchQueue.main.async {
+                self.listeningLabel.text = "🎧 Listening to: \(friendlyName)"
+            }
+        } else {
+            listeningLabel.text = "❌ Not listening to any characteristic."
+        }
+    }
+    
+    @objc private func handleDisconnection(_ notification: Notification) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.navigationController?.popViewController(animated: true)
+        }
+    }
+    
+    func handleDisconnection() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.navigationController?.popViewController(animated: true)
+        }
     }
     
     @objc func showBLEInfo() {
@@ -202,10 +238,15 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
 
         let receivedMessage = "📡 \(characteristicEmoji) \(readMarker) [\(characteristicID)] Received: \(translatedData) (\(hexData))"
         print(receivedMessage)
+        
+        if characteristic.uuid.uuidString == "2A19", let value = characteristic.value {
+            selectedDevice.batteryLevel = Int(value.first ?? 0)
+        }
 
         DispatchQueue.main.async {
             self.statusLabel.text = receivedMessage
             self.appendToResponseView(receivedMessage)
+//            self.responseTextView.scrollToBottom()
         }
     }
 
@@ -277,67 +318,89 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
 
     /// 📜 **UITableView Data Source**
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return selectedDevice.services.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? selectedDevice.services.count : selectedDevice.characteristics.values.flatMap({ $0 }).count
+        let service = selectedDevice.services[section]
+
+        let characteristicsCount = selectedDevice.characteristics[service]?.count ?? 0
+        return 1 + characteristicsCount
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "DetailCell") ?? UITableViewCell(style: .subtitle, reuseIdentifier: "DetailCell")
+        // Dequeue or create the cell.
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DetailCell") ??
+            UITableViewCell(style: .subtitle, reuseIdentifier: "DetailCell")
         cell.selectionStyle = .none
-        cell.textLabel?.text = nil
-        cell.detailTextLabel?.text = nil
+        cell.textLabel?.numberOfLines = 0
+        cell.detailTextLabel?.numberOfLines = 0
         cell.detailTextLabel?.attributedText = nil
         cell.accessoryType = .none
+        cell.accessoryView = nil  // Clear any previous accessory
 
-        if indexPath.section == 0 {
-            let service = selectedDevice.services[indexPath.row]
-            cell.textLabel?.text = "Service: \(service.uuid.uuidString)"
-            
-            // Display a friendly service name with an emoji if available.
+        let service = selectedDevice.services[indexPath.section]
+        
+        if indexPath.row == 0 {
+            // Service Cell
+            let serviceText = "Service: \(service.uuid.uuidString)"
+            let attributedText = NSMutableAttributedString(string: serviceText,
+                                                             attributes: [.font: UIFont.systemFont(ofSize: 17, weight: .regular)])
+            if let range = serviceText.range(of: "Service:") {
+                let nsRange = NSRange(range, in: serviceText)
+                attributedText.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .semibold), range: nsRange)
+            }
+            cell.textLabel?.attributedText = attributedText
+
             if let serviceName = knownServices[service.uuid.uuidString] {
                 cell.detailTextLabel?.text = "🛠 \(serviceName)"
             } else {
                 cell.detailTextLabel?.text = ""
             }
+            
+            cell.backgroundColor = UIColor(white: 0.95, alpha: 1.0)  // Light gray background
         } else {
-            // Characteristics cell.
-            // Instead of flattening without context, find the characteristic along with its associated service.
-            // We'll build an array of (service, characteristic) tuples.
-            var serviceCharacteristicPairs: [(service: CBService, characteristic: CBCharacteristic)] = []
-            for service in selectedDevice.services {
-                if let chars = selectedDevice.characteristics[service] {
-                    for char in chars {
-                        serviceCharacteristicPairs.append((service, char))
-                    }
-                }
-            }
-            
-            // Ensure we have a valid index.
-            guard indexPath.row < serviceCharacteristicPairs.count else { return cell }
-            
-            let pair = serviceCharacteristicPairs[indexPath.row]
-            let characteristic = pair.characteristic
-            let service = pair.service
+            // Characteristic Cell
+            let characteristics = selectedDevice.characteristics[service] ?? []
+            let characteristic = characteristics[indexPath.row - 1] // row 0 is service cell
             
             let propertiesText = getCharacteristicProperties(characteristic)
-            // Get the last 4 digits of the service's UUID.
             let serviceSuffix = String(service.uuid.uuidString.suffix(4))
-            
             cell.textLabel?.text = "Characteristic: \(characteristic.uuid.uuidString) \(propertiesText) (\(serviceSuffix))"
             
-            // Display a friendly characteristic name with an emoji if available.
             if let characteristicName = knownCharacteristics[characteristic.uuid.uuidString] {
                 cell.detailTextLabel?.text = "🛠 \(characteristicName)"
             } else {
                 cell.detailTextLabel?.text = ""
             }
+            
+            // Set a slightly smaller font for characteristics.
+            cell.textLabel?.font = UIFont.systemFont(ofSize: 14)
+            
+            // Mark TX characteristics with a light green background.
+            if writeCharacteristics.contains(where: { $0 === characteristic }) {
+                cell.backgroundColor = UIColor(red: 0.9, green: 1.0, blue: 0.9, alpha: 1.0)
+            } else {
+                cell.backgroundColor = .white
+            }
+            
+            // If this characteristic is the one we're listening to, add a headphones emoji on the right.
+            if let rx = rxCharacteristic, rx === characteristic {
+                let emojiLabel = UILabel()
+                emojiLabel.text = "🎧"
+                emojiLabel.font = UIFont.systemFont(ofSize: 18)
+                emojiLabel.sizeToFit()
+                cell.accessoryView = emojiLabel
+            } else {
+                cell.accessoryView = nil
+            }
         }
-        cell.textLabel?.numberOfLines = 0
+        
         return cell
     }
+
+
+
 
     /// 📖 **Format Properties**
     private func getCharacteristicProperties(_ characteristic: CBCharacteristic) -> String {
@@ -363,18 +426,18 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
     }
     
     /// Updates the listeningLabel with the currently selected rxCharacteristic.
-        private func updateListeningLabel() {
-            if let rx = rxCharacteristic {
-                // Optionally, use a friendly name lookup if available (e.g., knownCharacteristics)
-                let friendlyName = rx.uuid.uuidString  // Replace with lookup if available
-                DispatchQueue.main.async {
-                    self.listeningLabel.text = "Listening to: \(friendlyName)"
-                }
-
-            } else {
-                listeningLabel.text = "Not listening to any characteristic."
-            }
-        }
+//        private func updateListeningLabel() {
+//            if let rx = rxCharacteristic {
+//                // Optionally, use a friendly name lookup if available (e.g., knownCharacteristics)
+//                let friendlyName = rx.uuid.uuidString  // Replace with lookup if available
+//                DispatchQueue.main.async {
+//                    self.listeningLabel.text = "Listening to: \(friendlyName)"
+//                }
+//
+//            } else {
+//                listeningLabel.text = "Not listening to any characteristic."
+//            }
+//        }
 
         /// Called when the listenSwitch button is tapped.
         @IBAction func listenSwitchTapped(_ sender: UIButton) {
@@ -403,6 +466,7 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
                     self.rxCharacteristic = characteristic
                     // Enable notifications on the newly selected characteristic.
                     self.selectedDevice.peripheral.setNotifyValue(true, for: characteristic)
+                    self.tableView.reloadData()
                 }))
             }
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -413,4 +477,11 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
             
             present(alert, animated: true, completion: nil)
         }
+}
+
+extension UITextView {
+    func scrollToBottom() {
+        let range = NSMakeRange(self.text.count - 1, 1)
+        self.scrollRangeToVisible(range)
+    }
 }
