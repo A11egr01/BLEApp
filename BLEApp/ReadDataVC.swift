@@ -36,7 +36,11 @@ class ReadDataVC: UIViewController, CBPeripheralDelegate {
     // ✅ Get read values when they update
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         if let error = error {
-            print("❌ Error reading value: \(error)")
+            let error = "❌ Error reading value: \(error)"
+            print(error)
+            DispatchQueue.main.async {
+                self.valueLabel.text = error
+                }
             return
         }
 

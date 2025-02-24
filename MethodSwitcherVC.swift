@@ -45,7 +45,7 @@ class MethodSwitcherVC: UIViewController {
     }
     
     @objc func showBLEInfo() {
-        let infoVC = BLEInfoVC()
+        let infoVC = BLEInfoVC()  
         let navController = UINavigationController(rootViewController: infoVC)
         present(navController, animated: true)
     }
