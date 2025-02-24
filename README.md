@@ -47,7 +47,7 @@ cd BLE-Scanner
 
 ## 📸 Screenshots
 
-| **Scanning for Devices** | **Device Details** | **UART Console** |
+| **Scanning for Devices** | **UART Console** | **GATT Details** |
 |---|---|---|
 | ![Scan](https://github.com/A11egr01/BLEApp/blob/main/Screens/Home.PNG) | ![UART](https://github.com/A11egr01/BLEApp/blob/main/Screens/UART.PNG) | ![GATT](https://github.com/A11egr01/BLEApp/blob/main/Screens/GATT.PNG) |
 
