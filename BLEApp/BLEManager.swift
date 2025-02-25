@@ -100,24 +100,53 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
             connectedDevices.append(device)
         }
 
-        DispatchQueue.main.async {
+        if Thread.isMainThread {
             self.delegate?.didUpdateDevices(devices: self.discoveredDevices)
+        } else {
+            DispatchQueue.main.async {
+                self.delegate?.didUpdateDevices(devices: self.discoveredDevices)
+            }
         }
         
         peripheral.discoverServices(nil)  // Discover all services
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-         print("❌ Disconnected from \(peripheral.name ?? "Unknown Device")")
+             print("❌ Disconnected from \(peripheral.name ?? "Unknown Device")")
 
-         // ✅ Remove the device from connected devices list
-         connectedDevices.removeAll { $0.peripheral.identifier == peripheral.identifier }
+             // ✅ Remove the device from connected devices list
+             connectedDevices.removeAll { $0.peripheral.identifier == peripheral.identifier }
 
-         DispatchQueue.main.async {
-             self.delegate?.didUpdateDevices(devices: self.discoveredDevices)
+             DispatchQueue.main.async {
+                 self.delegate?.didUpdateDevices(devices: self.discoveredDevices)
+             }
          }
-     }
+    
+//    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+//        print("❌ Disconnected from \(peripheral.name ?? "Unknown Device")")
+//
+//        // ✅ Attempt Reconnection Before Removing from `connectedDevices`
+//        if shouldReconnect(to: peripheral) {
+//            print("🔄 Attempting to reconnect to \(peripheral.name ?? "Unknown Device")...")
+//
+//            DispatchQueue.global().asyncAfter(deadline: .now() + 1) { // Wait 1 second before retrying
+//                self.centralManager.connect(peripheral, options: nil)
+//            }
+//        } else {
+//            // ✅ Remove if we are NOT reconnecting
+//            connectedDevices.removeAll { $0.peripheral.identifier == peripheral.identifier }
+//            print("🛑 Removed \(peripheral.name ?? "Unknown Device") from connectedDevices")
+//        }
+//
+//        DispatchQueue.main.async {
+//            self.delegate?.didUpdateDevices(devices: self.discoveredDevices)
+//        }
+//    }
 
+    private func shouldReconnect(to peripheral: CBPeripheral) -> Bool {
+        return discoveredDevices.contains(where: { $0.peripheral.identifier == peripheral.identifier })
+    }
+    
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         if let error = error {
             print("❌ Error discovering services: \(error)")
@@ -159,3 +188,12 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     }
 }
 
+extension BLEManager {
+    func connectDevice(peripheral: CBPeripheral) {
+        centralManager.connect(peripheral, options: nil)
+    }
+
+    func disconnectDevice(peripheral: CBPeripheral) {
+        centralManager.cancelPeripheralConnection(peripheral)
+    }
+}

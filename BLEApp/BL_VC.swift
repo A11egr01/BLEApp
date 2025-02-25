@@ -44,6 +44,9 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
             // ✅ Initialize & Start Bluetooth Animation
             setupBluetoothIcon()
             startBluetoothAnimation()
+            
+            let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+            tableView.addGestureRecognizer(longPressGesture)
         }
         
         /// ✅ Called when BLE devices update
@@ -194,4 +197,42 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
             isScanning = false
             bluetoothIconView.layer.removeAllAnimations()
         }
+    
+    /// ✅ Handle Long Press Gesture
+    @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        guard gestureRecognizer.state == .began else { return }
+
+        let touchPoint = gestureRecognizer.location(in: tableView)
+        if let indexPath = tableView.indexPathForRow(at: touchPoint) {
+            let device = filteredDevices[indexPath.row]
+            showConnectionActionSheet(for: device)
+        }
+    }
+
+    /// ✅ Show Bottom Sheet (UIAlertController) with Connect/Disconnect options
+    func showConnectionActionSheet(for device: BLEDevice) {
+        let isConnected = bleManager.connectedDevices.contains { $0.peripheral.identifier == device.peripheral.identifier }
+
+        let alert = UIAlertController(title: device.peripheral.name ?? "Unknown Device", message: "Choose an action", preferredStyle: .actionSheet)
+
+        if isConnected {
+            let disconnectAction = UIAlertAction(title: "Disconnect", style: .destructive) { _ in
+                print("🔴 Disconnecting from \(device.peripheral.name ?? "Unknown Device")")
+                self.bleManager.disconnectDevice(peripheral: device.peripheral)
+            }
+            alert.addAction(disconnectAction)
+        } else {
+            let connectAction = UIAlertAction(title: "Connect", style: .default) { _ in
+                print("🔵 Connecting to \(device.peripheral.name ?? "Unknown Device")")
+                self.bleManager.connectDevice(peripheral: device.peripheral)
+            }
+            alert.addAction(connectAction)
+        }
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alert.addAction(cancelAction)
+
+        present(alert, animated: true, completion: nil)
+    }
+    
     }
