@@ -48,7 +48,47 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
 
         setAutoVCButton()
         updateAutoConnectButtonState()
-        
+        educationalLabel()
+    }
+    
+    func educationalLabel() {
+        let firstLaunchKey = "didShowLongPressHint"
+        if !UserDefaults.standard.bool(forKey: firstLaunchKey) {
+            UserDefaults.standard.set(true, forKey: firstLaunchKey)
+
+            let hintLabel = UILabel()
+            hintLabel.text = "👆 Long press a device for more actions!"
+            hintLabel.textAlignment = .center
+            hintLabel.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+            hintLabel.textColor = .white
+            hintLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+            hintLabel.layer.cornerRadius = 10
+            hintLabel.clipsToBounds = true
+            hintLabel.numberOfLines = 0
+            hintLabel.alpha = 0 // Start hidden for fade-in effect
+            hintLabel.translatesAutoresizingMaskIntoConstraints = false
+
+            view.addSubview(hintLabel)
+
+            // ✅ Auto Layout constraints for centering
+            NSLayoutConstraint.activate([
+                hintLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                hintLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+                hintLabel.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
+                hintLabel.heightAnchor.constraint(equalToConstant: 50)
+            ])
+
+            // ✅ Fade-in animation, then fade-out
+            UIView.animate(withDuration: 1, animations: {
+                hintLabel.alpha = 1
+            }) { _ in
+                UIView.animate(withDuration: 3, delay: 2, options: .curveEaseOut, animations: {
+                    hintLabel.alpha = 0
+                }) { _ in
+                    hintLabel.removeFromSuperview()
+                }
+            }
+        }
     }
     
     func setUpDevicesTableView() {

@@ -76,7 +76,6 @@ cd BLE-Scanner
 
 ## 🛠 Known Issues & Improvements
 - [ ] Occasionally, duplicate devices appear due to different UUIDs.
-- [ ] Improve reconnection behavior when a device disconnects.
 - [ ] Add **custom commands** for supported devices in the UART console.
 
 ---
