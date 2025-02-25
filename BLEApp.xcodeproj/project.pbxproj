@@ -37,6 +37,8 @@
 		8E74CC9B2D6B2E66004CF10D /* BLEInfoVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E74CC992D6B2E66004CF10D /* BLEInfoVC.xib */; };
 		8ED2B6A22D6C91F00041C6E5 /* MethodSwitcherVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8ED2B6A02D6C91F00041C6E5 /* MethodSwitcherVC.xib */; };
 		8ED2B6A42D6CD98D0041C6E5 /* MethodSwitcherVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED2B6A32D6CD98D0041C6E5 /* MethodSwitcherVC.swift */; };
+		8ED2B6A92D6DE3DA0041C6E5 /* AutoConnectVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED2B6A72D6DE3DA0041C6E5 /* AutoConnectVC.swift */; };
+		8ED2B6AA2D6DE3DA0041C6E5 /* AutoConnectVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8ED2B6A82D6DE3DA0041C6E5 /* AutoConnectVC.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +93,8 @@
 		8E74CC992D6B2E66004CF10D /* BLEInfoVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BLEInfoVC.xib; sourceTree = "<group>"; };
 		8ED2B6A02D6C91F00041C6E5 /* MethodSwitcherVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MethodSwitcherVC.xib; sourceTree = "<group>"; };
 		8ED2B6A32D6CD98D0041C6E5 /* MethodSwitcherVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MethodSwitcherVC.swift; sourceTree = "<group>"; };
+		8ED2B6A72D6DE3DA0041C6E5 /* AutoConnectVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoConnectVC.swift; sourceTree = "<group>"; };
+		8ED2B6A82D6DE3DA0041C6E5 /* AutoConnectVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AutoConnectVC.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +155,8 @@
 				8E0E92D62D68EBB4008BF11D /* ReadDataVC.xib */,
 				8E04457B2D68CCE800E47555 /* DeviceDetailsVC.swift */,
 				8E04457C2D68CCE800E47555 /* DeviceDetailsVC.xib */,
+				8ED2B6A72D6DE3DA0041C6E5 /* AutoConnectVC.swift */,
+				8ED2B6A82D6DE3DA0041C6E5 /* AutoConnectVC.xib */,
 				8E0E92D92D68ED53008BF11D /* DeviceInfoVC.swift */,
 				8E0E92DA2D68ED53008BF11D /* DeviceInfoVC.xib */,
 				8E0E92D12D68E327008BF11D /* NotifyDataVC.swift */,
@@ -295,6 +301,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8ED2B6A22D6C91F00041C6E5 /* MethodSwitcherVC.xib in Resources */,
+				8ED2B6AA2D6DE3DA0041C6E5 /* AutoConnectVC.xib in Resources */,
 				8E0445742D68C3B200E47555 /* BLEDeviceCell.xib in Resources */,
 				8E04456E2D68C0ED00E47555 /* BL_VC.xib in Resources */,
 				8E74CC972D6B085A004CF10D /* UARTDeviceVC.xib in Resources */,
@@ -340,6 +347,7 @@
 				8E74CC962D6B085A004CF10D /* UARTDeviceVC.swift in Sources */,
 				8E0445702D68C30B00E47555 /* BLEManager.swift in Sources */,
 				8E04453C2D68C0B000E47555 /* AppDelegate.swift in Sources */,
+				8ED2B6A92D6DE3DA0041C6E5 /* AutoConnectVC.swift in Sources */,
 				8E04453E2D68C0B000E47555 /* SceneDelegate.swift in Sources */,
 				8E0445762D68C75100E47555 /* knownManufacturers.swift in Sources */,
 				8E0445732D68C3B200E47555 /* BLEDeviceCell.swift in Sources */,

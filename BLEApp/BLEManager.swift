@@ -18,6 +18,17 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     var discoveredDevices: [BLEDevice] = []
     var connectedDevices: [BLEDevice] = []
     weak var delegate: BLEManagerDelegate?
+    
+    var autoConnectDevices: [UUID] {
+        get {
+            let storedUUIDs = UserDefaults.standard.array(forKey: "AutoConnectDevices") as? [String] ?? []
+            return storedUUIDs.compactMap { UUID(uuidString: $0) }
+        }
+        set {
+            let uuidStrings = newValue.map { $0.uuidString }
+            UserDefaults.standard.set(uuidStrings, forKey: "AutoConnectDevices")
+        }
+    }
 
     override init() {
         super.init()
@@ -28,9 +39,36 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
         if central.state == .poweredOn {
             print("Bluetooth is ON. Scanning for devices...")
             centralManager.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: false])
+            
+            // ✅ Attempt to Auto-Connect to saved devices
+            autoReconnectDevices()
+
         } else {
             print("Bluetooth is not available")
         }
+    }
+    
+    // Auto-Connect logic
+
+    func autoReconnectDevices() {
+        for deviceUUID in autoConnectDevices {
+            if let device = discoveredDevices.first(where: { $0.peripheral.identifier == deviceUUID }) {
+                if !connectedDevices.contains(where: { $0.peripheral.identifier == deviceUUID }) {
+                    print("🔄 Auto-connecting to \(device.peripheral.name ?? "Unknown Device")...")
+                    centralManager.connect(device.peripheral, options: nil)
+                }
+            }
+        }
+    }
+
+    func addToAutoConnect(_ device: BLEDevice) {
+        if !autoConnectDevices.contains(device.peripheral.identifier) {
+            autoConnectDevices.append(device.peripheral.identifier)
+        }
+    }
+
+    func removeFromAutoConnect(_ device: BLEDevice) {
+        autoConnectDevices.removeAll { $0 == device.peripheral.identifier }
     }
 
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
@@ -72,6 +110,12 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
         DispatchQueue.main.async {
             self.delegate?.didUpdateDevices(devices: self.discoveredDevices)
         }
+        
+        // ✅ Auto-connect if the device is saved in UserDefaults
+           if autoConnectDevices.contains(peripheral.identifier) {
+               print("✅ Found Auto-Connect Device: \(peripheral.name ?? "Unknown"), attempting connection...")
+               centralManager.connect(peripheral, options: nil)
+           }
     }
 
     
@@ -112,15 +156,23 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-             print("❌ Disconnected from \(peripheral.name ?? "Unknown Device")")
-
-             // ✅ Remove the device from connected devices list
-             connectedDevices.removeAll { $0.peripheral.identifier == peripheral.identifier }
-
-             DispatchQueue.main.async {
-                 self.delegate?.didUpdateDevices(devices: self.discoveredDevices)
-             }
-         }
+        print("❌ Disconnected from \(peripheral.name ?? "Unknown Device")")
+        
+        // ✅ Remove the device from connected devices list
+        connectedDevices.removeAll { $0.peripheral.identifier == peripheral.identifier }
+        
+        // ✅ If the device is in the auto-connect list, attempt reconnect
+        if autoConnectDevices.contains(peripheral.identifier) {
+            print("🔄 Attempting to reconnect to \(peripheral.name ?? "Unknown Device") in 3 seconds...")
+            DispatchQueue.global().asyncAfter(deadline: .now() + 3) {
+                self.centralManager.connect(peripheral, options: nil)
+            }
+        }
+        
+        DispatchQueue.main.async {
+            self.delegate?.didUpdateDevices(devices: self.discoveredDevices)
+        }
+    }
     
 //    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
 //        print("❌ Disconnected from \(peripheral.name ?? "Unknown Device")")

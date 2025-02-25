@@ -16,34 +16,49 @@ class BLEDeviceCell: UITableViewCell {
     @IBOutlet weak var manufacturerLabel: UILabel!
     
     
-    func configure(with device: BLEDevice, connected: Bool = false) {
-        deviceNameLabel.text = device.peripheral.name ?? "Unknown Device"
+    func configure(with device: BLEDevice, connected: Bool = false, autoConnected: Bool = false) {
+        var nameText = device.peripheral.name ?? "Unknown Device"
+
+        // 🔹 Append for actively connected devices
         if connected {
-            deviceNameLabel.text = (deviceNameLabel.text ?? "") + " 🔹"
-        } else {
-            deviceNameLabel.text = (deviceNameLabel.text ?? "") + ""
+            nameText += " 🔹"
         }
-        
-        if device.manufacturer == "Unknown Manufacturer" {
-            manufacturerLabel.text = ""
-        } else {
-            manufacturerLabel.text = "\(device.manufacturer)"
+
+        deviceNameLabel.text = nameText
+
+        // ✅ Build Manufacturer Label
+        var manufacturerText = ""
+
+        // 🌀 Prefix for auto-connected devices
+        if autoConnected {
+            manufacturerText += "🌀 "
         }
-        
+
+        if device.manufacturer != "Unknown Manufacturer" {
+            manufacturerText += device.manufacturer
+        } 
+
         // ✅ Append battery level if available
         if let battery = device.batteryLevel {
-            manufacturerLabel.text! += " 🔋 Battery: \(battery)%"
+            manufacturerText += " 🔋 Battery: \(battery)%"
         }
 
         // ✅ Append Last Seen timestamp if available
         if let timestamp = device.lastSeenTimestamp {
             let formattedTime = formatTimestamp(timestamp)
-            manufacturerLabel.text! += " ⏳ Last Seen: \(formattedTime)"
+            manufacturerText += " ⏳ Last Seen: \(formattedTime)"
         }
 
+        // Assign final manufacturer label text
+        manufacturerLabel.text = manufacturerText.isEmpty ? nil : manufacturerText
+
+        // Display UUID
         uuidLabel.text = "UUID: \(device.peripheral.identifier.uuidString)"
+
+        // Set RSSI label color based on signal strength
         rssiLabel.textColor = getColorForRSSI(device.rssi.intValue)
     }
+
 
     
 //    private func getColorForRSSI(_ rssi: Int) -> UIColor {

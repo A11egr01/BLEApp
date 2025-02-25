@@ -141,3 +141,4 @@ func isUARTDevice(_ peripheral: CBPeripheral) -> Bool {
     
     return false
 }
+
