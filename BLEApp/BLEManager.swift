@@ -200,6 +200,9 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     }
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        print("🔹 [BLEManager] Services discovered for \(peripheral.name ?? "Unknown")")
+
+        
         if let error = error {
             print("❌ Error discovering services: \(error)")
             return

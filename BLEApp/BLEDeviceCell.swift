@@ -81,7 +81,7 @@ class BLEDeviceCell: UITableViewCell {
             distanceText = "📡 Very Weak\n (~15+ meters)"
             rssiLabel.textColor = UIColor.brown  // 🟤 Very Weak
         case (-85)...(-76):
-            distanceText = "📶 Weak\n (~10-15 meters)"
+            distanceText = "📶 Weak\n (~10/15 meters)"
             rssiLabel.textColor = UIColor.red  // 🔴 Weak
         case (-75)...(-66):
             distanceText = "📡 Far\n (~5-10 meters)"

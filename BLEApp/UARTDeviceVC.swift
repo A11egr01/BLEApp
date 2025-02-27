@@ -82,6 +82,15 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.navigationController?.popViewController(animated: true)
         }
+        
+        // ✅ Clear characteristic lists on disconnection
+        writeCharacteristics.removeAll()
+        rxCharacteristic = nil
+        
+        DispatchQueue.main.async {
+            self.responseTextView.text = ""
+        }
+
     }
     
     func handleDisconnection() {
@@ -114,6 +123,10 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         responseTextView.text = ""
         txCharacteristic = nil
         rxCharacteristic = nil
+        
+        // ✅ Clear previous characteristic references
+        writeCharacteristics.removeAll()
+        rxCharacteristic = nil
 
         selectedDevice.peripheral.discoverServices(nil)
         
@@ -124,6 +137,8 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
 
     /// 🔍 **Discover Services & Characteristics**
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        print("🔸 [UARTDeviceVC] cices")
+
         if let error = error {
             print("❌ Service Discovery Error: \(error)")
             DispatchQueue.main.async {
@@ -159,16 +174,17 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
 
         // Prepare an array to gather eligible notification characteristics.
         var eligibleRxChars: [CBCharacteristic] = []
-        
+
         for characteristic in characteristics {
             let foundMessage = "🔍 Found Characteristic: \(characteristic.uuid.uuidString)"
             print(foundMessage)
             DispatchQueue.main.async {
                 self.statusLabel.text = foundMessage
             }
-            
-            // If the characteristic supports write operations, add it to your list.
-            if characteristic.properties.contains(.writeWithoutResponse) || characteristic.properties.contains(.write) {
+
+            // ✅ Prevent duplicates in writeCharacteristics
+            if (characteristic.properties.contains(.writeWithoutResponse) || characteristic.properties.contains(.write)),
+               !writeCharacteristics.contains(where: { $0.uuid == characteristic.uuid }) {
                 writeCharacteristics.append(characteristic)
                 let txMessage = "✅ Writable Characteristic: \(characteristic.uuid.uuidString)"
                 print(txMessage)
@@ -177,20 +193,21 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
                     self.sendButton.isEnabled = true  // Enable send button
                 }
             }
-            
-            // If the characteristic supports notifications, add it to eligible list.
-            if characteristic.properties.contains(.notify) || characteristic.properties.contains(.indicate) {
+
+            // ✅ Prevent duplicates in eligibleRxChars
+            if (characteristic.properties.contains(.notify) || characteristic.properties.contains(.indicate)),
+               !eligibleRxChars.contains(where: { $0.uuid == characteristic.uuid }) {
                 eligibleRxChars.append(characteristic)
             }
-            
-            // NEW: If the characteristic is readable, trigger a read.
+
+            // If the characteristic is readable, trigger a read.
             if characteristic.properties.contains(.read) {
                 print("📖 Requesting read for characteristic \(characteristic.uuid.uuidString)...")
                 peripheral.readValue(for: characteristic)
             }
         }
-        
-        // If no rxCharacteristic is selected yet, set the first eligible notification characteristic.
+
+        // ✅ Ensure rxCharacteristic is only set if it hasn’t been set before.
         if rxCharacteristic == nil, let firstEligible = eligibleRxChars.first {
             rxCharacteristic = firstEligible
             peripheral.setNotifyValue(true, for: firstEligible)
@@ -200,11 +217,10 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
                 self.statusLabel.text = rxMessage
             }
         }
-        
+
         DispatchQueue.main.async {
             self.tableView.reloadData()
-        }
-    }
+        }    }
 
 
     /// 📡 **Receive UART Data**
