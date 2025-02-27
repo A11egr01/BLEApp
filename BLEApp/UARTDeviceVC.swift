@@ -8,7 +8,42 @@
 import UIKit
 import CoreBluetooth
 
-class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate, CBPeripheralDelegate, UITextFieldDelegate {
+class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, BLEManagerDelegate {
+    
+    
+    // ✅ Handle refresh start
+    func didStartRefreshingBLEData(for peripheral: CBPeripheral) {
+        print("🔄 [UARTDeviceVC] Refreshing UART Services...")
+        DispatchQueue.main.async {
+            self.statusLabel.text = "🔄 Refreshing UART Services..."
+            self.responseTextView.text = ""
+        }
+    }
+
+    // ✅ Handle refresh end
+    func didFinishRefreshingBLEData(for peripheral: CBPeripheral) {
+        print("✅ [UARTDeviceVC] Finished refreshing BLE data.")
+        DispatchQueue.main.async {
+            self.refreshControl.endRefreshing()
+        }
+    }
+    
+    func didUpdateDevices(devices: [BLEDevice]) {
+        
+    }
+    
+    func didDiscoverServices(for peripheral: CBPeripheral, services: [CBService]) {
+        
+    }
+    
+    func didDiscoverCharacteristics(for peripheral: CBPeripheral, characteristics: [CBCharacteristic]) {
+        print("🔹 [UARTDeviceVC] Characteristics updated.")
+
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    
 
     @IBOutlet weak var statusLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
@@ -21,17 +56,10 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
     
     var selectedDevice: BLEDevice!
     let refreshControl = UIRefreshControl()
-    
-    var txCharacteristic: CBCharacteristic?
-    var rxCharacteristic: CBCharacteristic? {
-           didSet {
-               updateListeningLabel()
-           }
-       }
-    var writeCharacteristics: [CBCharacteristic] = [] // Store all writable characteristics
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        BLEManager.shared.addDelegate(self)
 //        title = "UART Terminal"
         self.title = (selectedDevice.peripheral.name ?? "") + " | UART"
         tableView.dataSource = self
@@ -42,7 +70,7 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         refreshControl.addTarget(self, action: #selector(refreshBLEData), for: .valueChanged)
 //        tableView.refreshControl = refreshControl
         
-        selectedDevice.peripheral.delegate = self
+//        selectedDevice.peripheral.delegate = self
         selectedDevice.peripheral.discoverServices(nil)
         sendTextField.delegate = self
 
@@ -56,6 +84,53 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         NotificationCenter.default.addObserver(self, selector: #selector(handleDisconnection(_:)), name: NSNotification.Name("DeviceDisconnected"), object: nil)
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+          super.viewWillDisappear(animated)
+          BLEManager.shared.removeDelegate(self)  // ✅ Unregister to prevent memory leaks
+      }
+    
+    func didUpdateWritableCharacteristics(hasWritable: Bool) {
+        DispatchQueue.main.async {
+            self.sendButton.isEnabled = hasWritable
+        }
+    }
+    
+    func didUpdateListeningCharacteristic(_ characteristic: CBCharacteristic?) {
+        DispatchQueue.main.async {
+            if let rx = characteristic {
+                let friendlyName = knownCharacteristics[rx.uuid.uuidString] ?? rx.uuid.uuidString
+                self.listeningLabel.text = "🎧 Listening to: \(friendlyName)"
+            } else {
+                self.listeningLabel.text = "❌ Not listening to any characteristic."
+            }
+        }
+    }
+    
+    func didReceiveData(from characteristic: CBCharacteristic, data: String) {
+           print("📡 [UARTDeviceVC] Received Data: \(data)")
+           DispatchQueue.main.async {
+               self.statusLabel.text = data
+               self.appendToResponseView(data)
+           }
+       }
+
+       // ✅ Handle error messages
+       func didReceiveDataError(_ errorMessage: String) {
+           print("❌ [UARTDeviceVC] Error: \(errorMessage)")
+           DispatchQueue.main.async {
+               self.statusLabel.text = errorMessage
+           }
+       }
+
+       // ✅ Handle battery level updates
+       func didUpdateBatteryLevel(for peripheral: CBPeripheral, level: Int) {
+           print("🔋 [UARTDeviceVC] Battery Level Updated: \(level)%")
+           DispatchQueue.main.async {
+               self.selectedDevice.batteryLevel = level
+               self.statusLabel.text = "🔋 Battery: \(level)%"
+           }
+       }
+    
     private func updateConnectionStatus() {
         if selectedDevice.peripheral.state == .connected {
             statusLabel.text = "✅ Connected to \(selectedDevice.peripheral.name ?? "Device")"
@@ -67,16 +142,16 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         }
     }
     
-    private func updateListeningLabel() {
-        if let rx = rxCharacteristic {
-            let friendlyName = knownCharacteristics[rx.uuid.uuidString] ?? rx.uuid.uuidString
-            DispatchQueue.main.async {
-                self.listeningLabel.text = "🎧 Listening to: \(friendlyName)"
-            }
-        } else {
-            listeningLabel.text = "❌ Not listening to any characteristic."
-        }
-    }
+//    private func updateListeningLabel() {
+//        if let rx = rxCharacteristic {
+//            let friendlyName = knownCharacteristics[rx.uuid.uuidString] ?? rx.uuid.uuidString
+//            DispatchQueue.main.async {
+//                self.listeningLabel.text = "🎧 Listening to: \(friendlyName)"
+//            }
+//        } else {
+//            listeningLabel.text = "❌ Not listening to any characteristic."
+//        }
+//    }
     
     @objc private func handleDisconnection(_ notification: Notification) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -84,14 +159,26 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         }
         
         // ✅ Clear characteristic lists on disconnection
-        writeCharacteristics.removeAll()
-        rxCharacteristic = nil
+//        writeCharacteristics.removeAll()
+//        rxCharacteristic = nil
         
         DispatchQueue.main.async {
             self.responseTextView.text = ""
         }
 
     }
+    
+    func didDisconnectDevice(_ peripheral: CBPeripheral) {
+         print("🔴 [UARTDeviceVC] Device Disconnected: \(peripheral.name ?? "Unknown")")
+
+         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+             self.navigationController?.popViewController(animated: true)
+         }
+
+         DispatchQueue.main.async {
+             self.responseTextView.text = ""
+         }
+     }
     
     func handleDisconnection() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -121,12 +208,12 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         selectedDevice.services.removeAll()
         selectedDevice.characteristics.removeAll()
         responseTextView.text = ""
-        txCharacteristic = nil
-        rxCharacteristic = nil
-        
-        // ✅ Clear previous characteristic references
-        writeCharacteristics.removeAll()
-        rxCharacteristic = nil
+//        txCharacteristic = nil
+//        rxCharacteristic = nil
+//        
+//        // ✅ Clear previous characteristic references
+//        writeCharacteristics.removeAll()
+//        rxCharacteristic = nil
 
         selectedDevice.peripheral.discoverServices(nil)
         
@@ -159,120 +246,122 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         }
     }
 
-    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-        if let error = error {
-            let errorMessage = "❌ Characteristic Discovery Error: \(error.localizedDescription)"
-            print(errorMessage)
-            DispatchQueue.main.async {
-                self.statusLabel.text = errorMessage
-            }
-            return
-        }
-        
-        guard let characteristics = service.characteristics else { return }
-        selectedDevice.characteristics[service] = characteristics
-
-        // Prepare an array to gather eligible notification characteristics.
-        var eligibleRxChars: [CBCharacteristic] = []
-
-        for characteristic in characteristics {
-            let foundMessage = "🔍 Found Characteristic: \(characteristic.uuid.uuidString)"
-            print(foundMessage)
-            DispatchQueue.main.async {
-                self.statusLabel.text = foundMessage
-            }
-
-            // ✅ Prevent duplicates in writeCharacteristics
-            if (characteristic.properties.contains(.writeWithoutResponse) || characteristic.properties.contains(.write)),
-               !writeCharacteristics.contains(where: { $0.uuid == characteristic.uuid }) {
-                writeCharacteristics.append(characteristic)
-                let txMessage = "✅ Writable Characteristic: \(characteristic.uuid.uuidString)"
-                print(txMessage)
-                DispatchQueue.main.async {
-                    self.statusLabel.text = txMessage
-                    self.sendButton.isEnabled = true  // Enable send button
-                }
-            }
-
-            // ✅ Prevent duplicates in eligibleRxChars
-            if (characteristic.properties.contains(.notify) || characteristic.properties.contains(.indicate)),
-               !eligibleRxChars.contains(where: { $0.uuid == characteristic.uuid }) {
-                eligibleRxChars.append(characteristic)
-            }
-
-            // If the characteristic is readable, trigger a read.
-            if characteristic.properties.contains(.read) {
-                print("📖 Requesting read for characteristic \(characteristic.uuid.uuidString)...")
-                peripheral.readValue(for: characteristic)
-            }
-        }
-
-        // ✅ Ensure rxCharacteristic is only set if it hasn’t been set before.
-        if rxCharacteristic == nil, let firstEligible = eligibleRxChars.first {
-            rxCharacteristic = firstEligible
-            peripheral.setNotifyValue(true, for: firstEligible)
-            let rxMessage = "✅ RX Characteristic Enabled: \(firstEligible.uuid.uuidString)"
-            print(rxMessage)
-            DispatchQueue.main.async {
-                self.statusLabel.text = rxMessage
-            }
-        }
-
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }    }
+//    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+//        if let error = error {
+//            let errorMessage = "❌ Characteristic Discovery Error: \(error.localizedDescription)"
+//            print(errorMessage)
+//            DispatchQueue.main.async {
+//                self.statusLabel.text = errorMessage
+//            }
+//            return
+//        }
+//        
+//        guard let characteristics = service.characteristics else { return }
+//        selectedDevice.characteristics[service] = characteristics
+//
+//        // Prepare an array to gather eligible notification characteristics.
+//        var eligibleRxChars: [CBCharacteristic] = []
+//
+//        for characteristic in characteristics {
+//            let foundMessage = "🔍 Found Characteristic: \(characteristic.uuid.uuidString)"
+//            print(foundMessage)
+//            DispatchQueue.main.async {
+//                self.statusLabel.text = foundMessage
+//            }
+//
+//            // ✅ Prevent duplicates in writeCharacteristics
+//            if (characteristic.properties.contains(.writeWithoutResponse) || characteristic.properties.contains(.write)),
+//               !writeCharacteristics.contains(where: { $0.uuid == characteristic.uuid }) {
+//                writeCharacteristics.append(characteristic)
+//                let txMessage = "✅ Writable Characteristic: \(characteristic.uuid.uuidString)"
+//                print(txMessage)
+//                DispatchQueue.main.async {
+//                    self.statusLabel.text = txMessage
+//                    self.sendButton.isEnabled = true  // Enable send button
+//                }
+//            }
+//
+//            // ✅ Prevent duplicates in eligibleRxChars
+//            if (characteristic.properties.contains(.notify) || characteristic.properties.contains(.indicate)),
+//               !eligibleRxChars.contains(where: { $0.uuid == characteristic.uuid }) {
+//                eligibleRxChars.append(characteristic)
+//            }
+//
+//            // If the characteristic is readable, trigger a read.
+//            if characteristic.properties.contains(.read) {
+//                print("📖 Requesting read for characteristic \(characteristic.uuid.uuidString)...")
+//                peripheral.readValue(for: characteristic)
+//            }
+//        }
+//
+//        // ✅ Ensure rxCharacteristic is only set if it hasn’t been set before.
+//        if rxCharacteristic == nil, let firstEligible = eligibleRxChars.first {
+//            rxCharacteristic = firstEligible
+//            peripheral.setNotifyValue(true, for: firstEligible)
+//            let rxMessage = "✅ RX Characteristic Enabled: \(firstEligible.uuid.uuidString)"
+//            print(rxMessage)
+//            DispatchQueue.main.async {
+//                self.statusLabel.text = rxMessage
+//            }
+//        }
+//
+//        DispatchQueue.main.async {
+//            self.tableView.reloadData()
+//        }    }
 
 
     /// 📡 **Receive UART Data**
-    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        if let error = error {
-            let errorMessage = "❌ Data Error: \(error.localizedDescription)"
-            print(errorMessage)
-            DispatchQueue.main.async {
-                self.statusLabel.text = errorMessage
-            }
-            return
-        }
-
-        guard let data = characteristic.value else { return }
-
-        var translatedData = translateCharacteristicValue(data: data)
-        
-        if characteristic.uuid.uuidString.uppercased() == "2A19", data.count == 1 {
-            translatedData = "\(data[0])%"
-        } else {
-            translatedData = translateCharacteristicValue(data: data)
-        }
-        
-        let hexData = data.map { String(format: "%02X", $0) }.joined(separator: " ")
-
-        // ✅ Extract last 4 characters of UUID
-        let characteristicID = String(characteristic.uuid.uuidString.suffix(4))
-
-        // ✅ Get associated emoji for the characteristic
-        let characteristicEmoji = getEmojiForCharacteristic(characteristicID)
-        let readMarker = characteristic.properties.contains(.read) ? "📖" : ""
-        
-        if translatedData == hexData {
-            translatedData = "RAW: "
-        }
-
-        let receivedMessage = "📡 \(characteristicEmoji) \(readMarker) [\(characteristicID)] Received: \(translatedData) (\(hexData))"
-        print(receivedMessage)
-        
-        if characteristic.uuid.uuidString == "2A19", let value = characteristic.value {
-            selectedDevice.batteryLevel = Int(value.first ?? 0)
-        }
-
-        DispatchQueue.main.async {
-            self.statusLabel.text = receivedMessage
-            self.appendToResponseView(receivedMessage)
-//            self.responseTextView.scrollToBottom()
-        }
-    }
+//    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+//        if let error = error {
+//            let errorMessage = "❌ Data Error: \(error.localizedDescription)"
+//            print(errorMessage)
+//            DispatchQueue.main.async {
+//                self.statusLabel.text = errorMessage
+//            }
+//            return
+//        }
+//
+//        guard let data = characteristic.value else { return }
+//
+//        var translatedData = translateCharacteristicValue(data: data)
+//        
+//        if characteristic.uuid.uuidString.uppercased() == "2A19", data.count == 1 {
+//            translatedData = "\(data[0])%"
+//        } else {
+//            translatedData = translateCharacteristicValue(data: data)
+//        }
+//        
+//        let hexData = data.map { String(format: "%02X", $0) }.joined(separator: " ")
+//
+//        // ✅ Extract last 4 characters of UUID
+//        let characteristicID = String(characteristic.uuid.uuidString.suffix(4))
+//
+//        // ✅ Get associated emoji for the characteristic
+//        let characteristicEmoji = getEmojiForCharacteristic(characteristicID)
+//        let readMarker = characteristic.properties.contains(.read) ? "📖" : ""
+//        
+//        if translatedData == hexData {
+//            translatedData = "RAW: "
+//        }
+//
+//        let receivedMessage = "📡 \(characteristicEmoji) \(readMarker) [\(characteristicID)] Received: \(translatedData) (\(hexData))"
+//        print(receivedMessage)
+//        
+//        if characteristic.uuid.uuidString == "2A19", let value = characteristic.value {
+//            selectedDevice.batteryLevel = Int(value.first ?? 0)
+//        }
+//
+//        DispatchQueue.main.async {
+//            self.statusLabel.text = receivedMessage
+//            self.appendToResponseView(receivedMessage)
+////            self.responseTextView.scrollToBottom()
+//        }
+//    }
 
     /// ✍️ **Send Data to UART Device**
     @IBAction func sendCommand() {
+        let writeCharacteristics = BLEManager.shared.writeCharacteristics  // ✅ Fetch from BLEManager
+
         guard !writeCharacteristics.isEmpty else {
             let warningMessage = "⚠️ No writable characteristics found!"
             print(warningMessage)
@@ -281,7 +370,7 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
             }
             return
         }
-        
+
         if writeCharacteristics.count == 1 {
             sendData(to: writeCharacteristics.first!)
         } else {
@@ -307,7 +396,7 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
     private func showCharacteristicSelection() {
         let alert = UIAlertController(title: "Select TX Characteristic", message: "Multiple writable characteristics found.", preferredStyle: .actionSheet)
 
-        for characteristic in writeCharacteristics {
+        for characteristic in BLEManager.shared.writeCharacteristics {
             alert.addAction(UIAlertAction(title: characteristic.uuid.uuidString, style: .default, handler: { _ in
                 self.sendData(to: characteristic)
             }))
@@ -316,6 +405,7 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(alert, animated: true)
     }
+
 
     /// 📝 **Append Response to View**
     private func appendToResponseView(_ message: String) {
@@ -399,14 +489,14 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
             cell.textLabel?.font = UIFont.systemFont(ofSize: 14)
             
             // Mark TX characteristics with a light green background.
-            if writeCharacteristics.contains(where: { $0 === characteristic }) {
+            if BLEManager.shared.writeCharacteristics.contains(where: { $0 === characteristic }) {
                 cell.backgroundColor = UIColor(red: 0.9, green: 1.0, blue: 0.9, alpha: 1.0)
             } else {
                 cell.backgroundColor = .white
             }
-            
+
             // If this characteristic is the one we're listening to, add a headphones emoji on the right.
-            if let rx = rxCharacteristic, rx === characteristic {
+            if let rx = BLEManager.shared.rxCharacteristic, rx === characteristic {
                 let emojiLabel = UILabel()
                 emojiLabel.text = "🎧"
                 emojiLabel.font = UIFont.systemFont(ofSize: 18)
@@ -415,6 +505,7 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
             } else {
                 cell.accessoryView = nil
             }
+
         }
         
         return cell
@@ -481,10 +572,10 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
                 let title = characteristic.uuid.uuidString
                 alert.addAction(UIAlertAction(title: title, style: .default, handler: { _ in
                     // If a different characteristic is chosen, disable notifications on the current one.
-                    if let currentRx = self.rxCharacteristic, currentRx != characteristic {
+                    if let currentRx = BLEManager.shared.rxCharacteristic, currentRx != characteristic {
                         self.selectedDevice.peripheral.setNotifyValue(false, for: currentRx)
                     }
-                    self.rxCharacteristic = characteristic
+//                    self.rxCharacteristic = characteristic
                     // Enable notifications on the newly selected characteristic.
                     self.selectedDevice.peripheral.setNotifyValue(true, for: characteristic)
                     self.tableView.reloadData()

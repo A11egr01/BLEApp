@@ -9,6 +9,22 @@ import UIKit
 import CoreBluetooth
 
 class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEManagerDelegate {
+    func didUpdateWritableCharacteristics(hasWritable: Bool) {
+        
+    }
+    
+    func didDisconnectDevice(_ peripheral: CBPeripheral) {
+        
+    }
+    
+    func didStartRefreshingBLEData(for peripheral: CBPeripheral) {
+        
+    }
+    
+    func didFinishRefreshingBLEData(for peripheral: CBPeripheral) {
+        
+    }
+    
     
     @IBOutlet weak var radarView: UIView!
     @IBOutlet weak var toggle: UISegmentedControl!
@@ -32,11 +48,11 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "BLE devices"
-
+        
         self.navigationItem.hidesBackButton = true
         
         toggle.insertSegment(withTitle: "iPhones", at: 2, animated: false)
-
+        
         
         toggle.addTarget(self, action: #selector(segmentedControlChanged), for: .valueChanged)
         
@@ -44,8 +60,8 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
         setupBluetoothIcon()
         startBluetoothAnimation()
         setUpDevicesTableView()
-
-
+        
+        
         setAutoVCButton()
         updateAutoConnectButtonState()
         educationalLabel()
@@ -55,7 +71,7 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
         let firstLaunchKey = "didShowLongPressHint"
         if !UserDefaults.standard.bool(forKey: firstLaunchKey) {
             UserDefaults.standard.set(true, forKey: firstLaunchKey)
-
+            
             let hintLabel = UILabel()
             hintLabel.text = "👆 Long press a device for more actions!"
             hintLabel.textAlignment = .center
@@ -67,9 +83,9 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
             hintLabel.numberOfLines = 0
             hintLabel.alpha = 0 // Start hidden for fade-in effect
             hintLabel.translatesAutoresizingMaskIntoConstraints = false
-
+            
             view.addSubview(hintLabel)
-
+            
             // ✅ Auto Layout constraints for centering
             NSLayoutConstraint.activate([
                 hintLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -77,7 +93,7 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
                 hintLabel.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
                 hintLabel.heightAnchor.constraint(equalToConstant: 50)
             ])
-
+            
             // ✅ Fade-in animation, then fade-out
             UIView.animate(withDuration: 1, animations: {
                 hintLabel.alpha = 1
@@ -94,8 +110,8 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
     func setUpDevicesTableView() {
         tableView.dataSource = self
         tableView.delegate = self
-        bleManager.delegate = self
-
+        BLEManager.shared.addDelegate(self)
+        
         let nib = UINib(nibName: "BLEDeviceCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "BLEDeviceCell")
         
@@ -112,18 +128,18 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
     
     func setAutoVCButton() {
         // ✅ Set up Auto-Connect Button in Nav Bar
-            let autoConnectBarButton = UIBarButtonItem(customView: autoConnectButton)
-            navigationItem.leftBarButtonItem = autoConnectBarButton
-
-            // ✅ Set action inside viewDidLoad
-            autoConnectButton.addTarget(self, action: #selector(showAutoConnectList), for: .touchUpInside)
-            
-            updateAutoConnectButtonState() // ✅ Update button appearance
+        let autoConnectBarButton = UIBarButtonItem(customView: autoConnectButton)
+        navigationItem.leftBarButtonItem = autoConnectBarButton
+        
+        // ✅ Set action inside viewDidLoad
+        autoConnectButton.addTarget(self, action: #selector(showAutoConnectList), for: .touchUpInside)
+        
+        updateAutoConnectButtonState() // ✅ Update button appearance
     }
     
     func updateAutoConnectButtonState() {
         let hasAutoConnectDevices = !bleManager.autoConnectDevices.isEmpty
-
+        
         autoConnectButton.isEnabled = hasAutoConnectDevices
         autoConnectButton.setTitleColor(hasAutoConnectDevices ? .systemBlue : .gray, for: .normal) // ✅ Grey out if empty
     }
@@ -181,7 +197,7 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
         tableView.reloadData()
         bleManager.stopScanning()
         bleManager = BLEManager()
-        bleManager.delegate = self
+        bleManager.addDelegate(self)
         bleManager.centralManagerDidUpdateState(bleManager.centralManager)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -222,14 +238,14 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
         }
         let isConnected = bleManager.connectedDevices.contains { $0.peripheral.identifier == device.peripheral.identifier }
         let isAutoConnected = bleManager.autoConnectDevices.contains(device.peripheral.identifier)
-
+        
         // ✅ Configure cell with connection and auto-connect status
         cell.configure(with: device, connected: isConnected, autoConnected: isAutoConnected)
-
+        
         // ✅ Reset background only when disconnected
         cell.backgroundColor = isConnected ? cell.backgroundColor : .white
         
-
+        
         return cell
     }
     
@@ -352,5 +368,14 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
             present(alert, animated: true, completion: nil)
         }
         
+    }
+    
+    func didDiscoverServices(for peripheral: CBPeripheral, services: [CBService]) {}
+    func didDiscoverCharacteristics(for peripheral: CBPeripheral, characteristics: [CBCharacteristic]) {}
+    func didReceiveData(from characteristic: CBCharacteristic, data: String) {}
+    func didReceiveDataError(_ errorMessage: String) {}
+    func didUpdateBatteryLevel(for peripheral: CBPeripheral, level: Int) {
+    }
+    func didUpdateListeningCharacteristic(_ characteristic: CBCharacteristic?) {
     }
 }
