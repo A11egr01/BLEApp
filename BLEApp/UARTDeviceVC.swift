@@ -107,12 +107,17 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
     }
     
     func didReceiveData(from characteristic: CBCharacteristic, data: String) {
-           print("📡 [UARTDeviceVC] Received Data: \(data)")
-           DispatchQueue.main.async {
-               self.statusLabel.text = data
-               self.appendToResponseView(data)
-           }
-       }
+        print("📡 [UARTDeviceVC] Received Data: \(data)")
+        
+        guard characteristic.service?.peripheral == selectedDevice.peripheral else {
+            return
+        }
+        
+        DispatchQueue.main.async {
+            self.statusLabel.text = data
+            self.appendToResponseView(data)
+        }
+    }
 
        // ✅ Handle error messages
        func didReceiveDataError(_ errorMessage: String) {
