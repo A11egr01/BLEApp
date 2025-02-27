@@ -314,8 +314,17 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         }
 
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+
+        // ✅ iPad Fix
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.sourceView = self.view // Anchor to the main view
+            popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.maxY, width: 0, height: 0)
+            popoverController.permittedArrowDirections = [] // Remove arrow
+        }
+
         present(alert, animated: true)
     }
+
 
     /// 📝 **Append Response to View**
     private func appendToResponseView(_ message: String) {
@@ -495,6 +504,13 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
             // For iPad support, specify the source view.
             alert.popoverPresentationController?.sourceView = sender
             alert.popoverPresentationController?.sourceRect = sender.bounds
+            
+            // ✅ iPad Fix
+            if let popoverController = alert.popoverPresentationController {
+                popoverController.sourceView = sender
+                popoverController.sourceRect = sender.bounds
+                popoverController.permittedArrowDirections = .up
+            }
             
             present(alert, animated: true, completion: nil)
         }
