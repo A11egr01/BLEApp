@@ -12,6 +12,10 @@ protocol BLEManagerDelegate: AnyObject {
     func didUpdateDevices(devices: [BLEDevice])
 }
 
+extension Notification.Name {
+    static let deviceDisconnected = Notification.Name("DeviceDisconnected")
+}
+
 class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
 
     var centralManager: CBCentralManager!
@@ -160,6 +164,13 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
         
         // ✅ Remove the device from connected devices list
         connectedDevices.removeAll { $0.peripheral.identifier == peripheral.identifier }
+        
+        NotificationCenter.default.post(
+               name: .deviceDisconnected,
+               object: nil,
+               userInfo: ["peripheral": peripheral]
+           )
+
         
         // ✅ If the device is in the auto-connect list, attempt reconnect
         if autoConnectDevices.contains(peripheral.identifier) {

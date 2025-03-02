@@ -9,6 +9,7 @@ import UIKit
 import CoreBluetooth
 
 class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate, CBPeripheralDelegate, UITextFieldDelegate {
+    
 
     @IBOutlet weak var statusLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
@@ -53,8 +54,19 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Info", style: .plain, target: self, action: #selector(showBLEInfo))
         
         updateConnectionStatus()
-        NotificationCenter.default.addObserver(self, selector: #selector(handleDisconnection(_:)), name: NSNotification.Name("DeviceDisconnected"), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(handleDisconnection2(_:)), name: NSNotification.Name("DeviceDisconnected"), object: nil)
+        NotificationCenter.default.addObserver(
+              self,
+              selector: #selector(handleDisconnection2(_:)),
+              name: .deviceDisconnected,
+              object: nil
+          )
     }
+    
+    deinit {
+          // Remove the observer when the view controller is deallocated
+          NotificationCenter.default.removeObserver(self, name: .deviceDisconnected, object: nil)
+      }
     
     private func updateConnectionStatus() {
         if selectedDevice.peripheral.state == .connected {
@@ -63,7 +75,8 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         } else {
             statusLabel.text = "❌ Disconnected"
             statusLabel.textColor = .systemRed
-            handleDisconnection()
+            responseTextView.text = ""
+//            handleDisconnection()
         }
     }
     
@@ -96,6 +109,26 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
     func handleDisconnection() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.navigationController?.popViewController(animated: true)
+        }
+    }
+    
+    @objc private func handleDisconnection2(_ notification: Notification) {
+        // Extract the disconnected peripheral from the notification
+        guard let userInfo = notification.userInfo,
+              let disconnectedPeripheral = userInfo["peripheral"] as? CBPeripheral else {
+            return
+        }
+        
+        // Check if the disconnected peripheral matches selectedDevice
+        if disconnectedPeripheral.identifier == selectedDevice.peripheral.identifier {
+            DispatchQueue.main.async {
+                self.updateConnectionStatus()
+                
+                // Optionally, navigate back to the previous screen after a delay
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+//                    self.navigationController?.popViewController(animated: true)
+//                }
+            }
         }
     }
     

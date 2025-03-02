@@ -91,6 +91,8 @@ func getCharacteristicInfo(_ characteristicID: String) -> BLECharacteristic {
         "2A27": BLECharacteristic(id: "2A27", emoji: "🔄", description: "Hardware Revision"),
         "2A28": BLECharacteristic(id: "2A28", emoji: "🖥", description: "Software Revision"),
         "2A24": BLECharacteristic(id: "2A24", emoji: "📋", description: "Model Number"),
+        "2A23": BLECharacteristic(id: "2A23", emoji: "📋", description: "System ID"),
+        "2A50": BLECharacteristic(id: "2A50", emoji: "📋", description: "PnP ID"),
         "2A25": BLECharacteristic(id: "2A25", emoji: "🔖", description: "Serial Number"),
         "2A00": BLECharacteristic(id: "2A00", emoji: "🏷", description: "Device Name"),
         "2A01": BLECharacteristic(id: "2A01", emoji: "📏", description: "Appearance"),
