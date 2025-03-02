@@ -250,14 +250,19 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         let characteristicID = String(characteristic.uuid.uuidString.suffix(4))
 
         // ✅ Get associated emoji for the characteristic
-        let characteristicEmoji = getEmojiForCharacteristic(characteristicID)
-        let readMarker = characteristic.properties.contains(.read) ? "📖" : ""
-        
+        let characteristicInfo = getCharacteristicInfo(characteristicID)
+        let readIndicator = characteristic.properties.contains(.read) ? "📖" : ""
+
         if translatedData == hexData {
             translatedData = "RAW: "
         }
 
-        let receivedMessage = "📡 \(characteristicEmoji) \(readMarker) [\(characteristicID)] Received: \(translatedData) (\(hexData))"
+        var receivedMessage = "📡 \(characteristicInfo.emoji) \(readIndicator) [\(characteristicID)] Received: \(translatedData) (\(hexData))"
+
+        if characteristicInfo.emoji != "🔹" {
+            receivedMessage = "📡 \(characteristicInfo.emoji) \(readIndicator) [\(characteristicID)] \(characteristicInfo.description): \(translatedData)"
+        }
+        
         print(receivedMessage)
         
         if characteristic.uuid.uuidString == "2A19", let value = characteristic.value {

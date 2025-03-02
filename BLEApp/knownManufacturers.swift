@@ -64,52 +64,105 @@ let knownCharacteristics: [String: String] = [
     "2A00": "🎧 AirPods Name"
 ]
 
-func getEmojiForCharacteristic(_ characteristicID: String) -> String {
-    let emojiMapping: [String: String] = [
-        "2A19": "🔋", // Battery Level
-        "2A37": "❤️", // Heart Rate Measurement
-        "2A6E": "🌡", // Temperature Measurement
-        "2A98": "💪", // Weight Measurement
-        "2A9D": "🏃‍♂️", // Step Counter
-        "2A56": "💨", // Humidity
-        "2A58": "⏳", // Time Stamp
-        "2A6D": "☀️", // Light Intensity
-        "2A05": "🚨", // Immediate Alert
-        "2A69": "🧭", // Location
-        "2A76": "⚡️", // Power Control
-        "2A2A": "🔐", // Security
-        "2A63": "💉", // Blood Pressure
-        "2A9E": "🦶", // Step Counter
-        "2A29": "🏭", // Manufacturer Name
-        "2A26": "📦", // Firmware Revision
-        "2A27": "🔄", // Hardware Revision
-        "2A28": "🖥", // Software Revision
-        "2A24": "📋", // Model Number
-        "2A25": "🔖", // Serial Number
-        "2A00": "🏷", // Device Name
-        "2A01": "📏", // Appearance
-        "2A04": "📶", // Connection Parameters
-        "2A03": "🔑", // Reconnection Address
-        "2A06": "🔔", // Alert Level
-        "2A08": "⏰", // Date & Time
-        "2A0D": "🚴‍♂️", // Cycling Power
-        "2A4D": "🎤", // Audio Input
-        "2A4E": "🔈", // Audio Output
-        "2A7E": "🏋️", // Fitness Control
-        "2A1C": "🫁", // Respiratory Rate
-        "2A40": "📡", // Location Speed
-        "2A46": "📳", // Alert Notification
-        "2A80": "👤", // User Profile
-        "2A85": "🔘", // Button Pressed
-        "2A90": "👂", // Hearing Aid
-        "2A99": "🦵", // Body Composition
-        "2AA7": "🧠", // Cognitive Function
-        "2AA9": "🎮", // Game Controller
-        "2ACD": "🎛", // Control Point
+struct BLECharacteristic {
+    let id: String
+    let emoji: String
+    let description: String
+}
+
+func getCharacteristicInfo(_ characteristicID: String) -> BLECharacteristic {
+    let characteristicMapping: [String: BLECharacteristic] = [
+        "2A19": BLECharacteristic(id: "2A19", emoji: "🔋", description: "Battery Level"),
+        "2A37": BLECharacteristic(id: "2A37", emoji: "❤️", description: "Heart Rate Measurement"),
+        "2A6E": BLECharacteristic(id: "2A6E", emoji: "🌡", description: "Temperature Measurement"),
+        "2A98": BLECharacteristic(id: "2A98", emoji: "💪", description: "Weight Measurement"),
+        "2A9D": BLECharacteristic(id: "2A9D", emoji: "🏃‍♂️", description: "Step Counter"),
+        "2A56": BLECharacteristic(id: "2A56", emoji: "💨", description: "Humidity"),
+        "2A58": BLECharacteristic(id: "2A58", emoji: "⏳", description: "Time Stamp"),
+        "2A6D": BLECharacteristic(id: "2A6D", emoji: "☀️", description: "Light Intensity"),
+        "2A05": BLECharacteristic(id: "2A05", emoji: "🚨", description: "Immediate Alert"),
+        "2A69": BLECharacteristic(id: "2A69", emoji: "🧭", description: "Location"),
+        "2A76": BLECharacteristic(id: "2A76", emoji: "⚡️", description: "Power Control"),
+        "2A2A": BLECharacteristic(id: "2A2A", emoji: "🔐", description: "Security"),
+        "2A63": BLECharacteristic(id: "2A63", emoji: "💉", description: "Blood Pressure"),
+        "2A9E": BLECharacteristic(id: "2A9E", emoji: "🦶", description: "Step Counter"),
+        "2A29": BLECharacteristic(id: "2A29", emoji: "🏭", description: "Manufacturer Name"),
+        "2A26": BLECharacteristic(id: "2A26", emoji: "📦", description: "Firmware Revision"),
+        "2A27": BLECharacteristic(id: "2A27", emoji: "🔄", description: "Hardware Revision"),
+        "2A28": BLECharacteristic(id: "2A28", emoji: "🖥", description: "Software Revision"),
+        "2A24": BLECharacteristic(id: "2A24", emoji: "📋", description: "Model Number"),
+        "2A25": BLECharacteristic(id: "2A25", emoji: "🔖", description: "Serial Number"),
+        "2A00": BLECharacteristic(id: "2A00", emoji: "🏷", description: "Device Name"),
+        "2A01": BLECharacteristic(id: "2A01", emoji: "📏", description: "Appearance"),
+        "2A04": BLECharacteristic(id: "2A04", emoji: "📶", description: "Connection Parameters"),
+        "2A03": BLECharacteristic(id: "2A03", emoji: "🔑", description: "Reconnection Address"),
+        "2A06": BLECharacteristic(id: "2A06", emoji: "🔔", description: "Alert Level"),
+        "2A08": BLECharacteristic(id: "2A08", emoji: "⏰", description: "Date & Time"),
+        "2A0D": BLECharacteristic(id: "2A0D", emoji: "🚴‍♂️", description: "Cycling Power"),
+        "2A4D": BLECharacteristic(id: "2A4D", emoji: "🎤", description: "Audio Input"),
+        "2A4E": BLECharacteristic(id: "2A4E", emoji: "🔈", description: "Audio Output"),
+        "2A7E": BLECharacteristic(id: "2A7E", emoji: "🏋️", description: "Fitness Control"),
+        "2A1C": BLECharacteristic(id: "2A1C", emoji: "🫁", description: "Respiratory Rate"),
+        "2A40": BLECharacteristic(id: "2A40", emoji: "📡", description: "Location Speed"),
+        "2A46": BLECharacteristic(id: "2A46", emoji: "📳", description: "Alert Notification"),
+        "2A80": BLECharacteristic(id: "2A80", emoji: "👤", description: "User Profile"),
+        "2A85": BLECharacteristic(id: "2A85", emoji: "🔘", description: "Button Pressed"),
+        "2A90": BLECharacteristic(id: "2A90", emoji: "👂", description: "Hearing Aid"),
+        "2A99": BLECharacteristic(id: "2A99", emoji: "🦵", description: "Body Composition"),
+        "2AA7": BLECharacteristic(id: "2AA7", emoji: "🧠", description: "Cognitive Function"),
+        "2AA9": BLECharacteristic(id: "2AA9", emoji: "🎮", description: "Game Controller"),
+        "2ACD": BLECharacteristic(id: "2ACD", emoji: "🎛", description: "Control Point"),
     ]
 
-    return emojiMapping[characteristicID] ?? "🔹" // Default Emoji
+    return characteristicMapping[characteristicID] ?? BLECharacteristic(id: characteristicID, emoji: "🔹", description: "Unknown Characteristic")
 }
+
+//func getEmojiForCharacteristic(_ characteristicID: String) -> String {
+//    let emojiMapping: [String: String] = [
+//        "2A19": "🔋", // Battery Level
+//        "2A37": "❤️", // Heart Rate Measurement
+//        "2A6E": "🌡", // Temperature Measurement
+//        "2A98": "💪", // Weight Measurement
+//        "2A9D": "🏃‍♂️", // Step Counter
+//        "2A56": "💨", // Humidity
+//        "2A58": "⏳", // Time Stamp
+//        "2A6D": "☀️", // Light Intensity
+//        "2A05": "🚨", // Immediate Alert
+//        "2A69": "🧭", // Location
+//        "2A76": "⚡️", // Power Control
+//        "2A2A": "🔐", // Security
+//        "2A63": "💉", // Blood Pressure
+//        "2A9E": "🦶", // Step Counter
+//        "2A29": "🏭", // Manufacturer Name
+//        "2A26": "📦", // Firmware Revision
+//        "2A27": "🔄", // Hardware Revision
+//        "2A28": "🖥", // Software Revision
+//        "2A24": "📋", // Model Number
+//        "2A25": "🔖", // Serial Number
+//        "2A00": "🏷", // Device Name
+//        "2A01": "📏", // Appearance
+//        "2A04": "📶", // Connection Parameters
+//        "2A03": "🔑", // Reconnection Address
+//        "2A06": "🔔", // Alert Level
+//        "2A08": "⏰", // Date & Time
+//        "2A0D": "🚴‍♂️", // Cycling Power
+//        "2A4D": "🎤", // Audio Input
+//        "2A4E": "🔈", // Audio Output
+//        "2A7E": "🏋️", // Fitness Control
+//        "2A1C": "🫁", // Respiratory Rate
+//        "2A40": "📡", // Location Speed
+//        "2A46": "📳", // Alert Notification
+//        "2A80": "👤", // User Profile
+//        "2A85": "🔘", // Button Pressed
+//        "2A90": "👂", // Hearing Aid
+//        "2A99": "🦵", // Body Composition
+//        "2AA7": "🧠", // Cognitive Function
+//        "2AA9": "🎮", // Game Controller
+//        "2ACD": "🎛", // Control Point
+//    ]
+//
+//    return emojiMapping[characteristicID] ?? "🔹" // Default Emoji
+//}
  
 func isUARTDevice(_ peripheral: CBPeripheral) -> Bool {
     let uartServices: Set<CBUUID> = [
