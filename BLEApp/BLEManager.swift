@@ -33,7 +33,8 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     var connectedDevices: [BLEDevice] = []
     var delegates = NSHashTable<AnyObject>.weakObjects() // ✅ Supports multiple delegates
     static let shared = BLEManager()
-    
+    var selectedDevice: BLEDevice?
+
     var writeCharacteristics: [CBCharacteristic] = []
     var txCharacteristic: CBCharacteristic?
     var rxCharacteristic: CBCharacteristic? {
@@ -88,6 +89,25 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
 
         } else {
             print("Bluetooth is not available")
+        }
+    }
+    
+    func refreshBLEData() {
+        print("🔄 Full BLE rescan initiated...")
+        
+        // ✅ Clear existing device lists
+        discoveredDevices.removeAll()
+        connectedDevices.removeAll()
+        writeCharacteristics.removeAll()
+        rxCharacteristic = nil
+        txCharacteristic = nil
+        
+        // ✅ Restart scanning
+        centralManager.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: false])
+
+        // ✅ Notify UI
+        DispatchQueue.main.async {
+            self.notifyDelegates { $0.didUpdateDevices(devices: self.discoveredDevices) }
         }
     }
     
@@ -182,28 +202,34 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         print("✅ Connected to \(peripheral.name ?? "Unknown Device")")
-        
-        if let device = discoveredDevices.first(where: { $0.peripheral.identifier == peripheral.identifier }) {
-            connectedDevices.append(device)
-        }
 
-        if Thread.isMainThread {
-            self.notifyDelegates { $0.didUpdateDevices(devices: self.discoveredDevices) }
-        } else {
-            DispatchQueue.main.async {
-                self.notifyDelegates { $0.didUpdateDevices(devices: self.discoveredDevices) }
+        if let device = discoveredDevices.first(where: { $0.peripheral.identifier == peripheral.identifier }) {
+            if !connectedDevices.contains(where: { $0.peripheral.identifier == peripheral.identifier }) {
+                connectedDevices.append(device)
             }
         }
-        
-        peripheral.discoverServices(nil)  // Discover all services
+
+        // ✅ Notify UI to update
+        DispatchQueue.main.async {
+            self.notifyDelegates { $0.didUpdateDevices(devices: self.discoveredDevices) }
+        }
+
+        peripheral.discoverServices(nil)  // Discover services
     }
+
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         print("❌ Disconnected from \(peripheral.name ?? "Unknown Device")")
-        
+
+        // ✅ If `selectedDevice` is nil, do not filter—handle all disconnections
+        if let selectedDevice = selectedDevice, peripheral.identifier != selectedDevice.peripheral.identifier {
+            print("⚠️ Disconnected peripheral is not the selected device. Ignoring.")
+            return
+        }
+
         // ✅ Remove the device from connected devices list
         connectedDevices.removeAll { $0.peripheral.identifier == peripheral.identifier }
-        
+
         // ✅ If the device is in the auto-connect list, attempt reconnect
         if autoConnectDevices.contains(peripheral.identifier) {
             print("🔄 Attempting to reconnect to \(peripheral.name ?? "Unknown Device") in 3 seconds...")
@@ -211,11 +237,13 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
                 self.centralManager.connect(peripheral, options: nil)
             }
         }
-        
+
+        // ✅ Notify delegates about the update
         DispatchQueue.main.async {
             self.notifyDelegates { $0.didUpdateDevices(devices: self.discoveredDevices) }
         }
     }
+
     
 //    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
 //        print("❌ Disconnected from \(peripheral.name ?? "Unknown Device")")
@@ -274,6 +302,12 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
             return
         }
 
+        // ✅ If `selectedDevice` is nil, allow discovery for all devices
+        if let selectedDevice = selectedDevice, peripheral.identifier != selectedDevice.peripheral.identifier {
+            print("⚠️ Discovered characteristics for a peripheral that is not the selected device. Ignoring.")
+            return
+        }
+
         // ✅ Find the corresponding device
         guard let device = discoveredDevices.first(where: { $0.peripheral.identifier == peripheral.identifier }) else { return }
 
@@ -295,7 +329,7 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
             print(foundMessage)
 
             // ✅ Prevent duplicates in writeCharacteristics
-            if (characteristic.properties.contains(.writeWithoutResponse) || characteristic.properties.contains(.write)),
+            if (characteristic.properties.contains(.writeWithoutResponse) || characteristic.properties.contains(.write)) &&
                !writeCharacteristics.contains(where: { $0.uuid == characteristic.uuid }) {
                 writeCharacteristics.append(characteristic)
                 let txMessage = "✅ Writable Characteristic: \(characteristic.uuid.uuidString)"
@@ -303,7 +337,7 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
             }
 
             // ✅ Prevent duplicates in eligibleRxChars
-            if (characteristic.properties.contains(.notify) || characteristic.properties.contains(.indicate)),
+            if (characteristic.properties.contains(.notify) || characteristic.properties.contains(.indicate)) &&
                !eligibleRxChars.contains(where: { $0.uuid == characteristic.uuid }) {
                 eligibleRxChars.append(characteristic)
             }
@@ -315,7 +349,6 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
             }
         }
 
-        
         // ✅ Ensure `rxCharacteristic` is only set once
         if rxCharacteristic == nil, let firstEligible = eligibleRxChars.first {
             rxCharacteristic = firstEligible
@@ -329,6 +362,7 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
 
         notifyDelegates { $0.didDiscoverCharacteristics(for: peripheral, characteristics: characteristics) }
     }
+
 
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {

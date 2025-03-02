@@ -59,6 +59,14 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("⚠️ sap viewDidLoad")
+
+        guard selectedDevice != nil else {
+            print("⚠️ No selected device!")
+            return
+        }
+        BLEManager.shared.selectedDevice = selectedDevice
+
         BLEManager.shared.addDelegate(self)
 //        title = "UART Terminal"
         self.title = (selectedDevice.peripheral.name ?? "") + " | UART"
@@ -86,7 +94,10 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
     
     override func viewWillDisappear(_ animated: Bool) {
           super.viewWillDisappear(animated)
-          BLEManager.shared.removeDelegate(self)  // ✅ Unregister to prevent memory leaks
+        BLEManager.shared.removeDelegate(self)
+        BLEManager.shared.selectedDevice = nil 
+//        BLEManager.shared.refreshBLEData()
+
       }
     
     func didUpdateWritableCharacteristics(hasWritable: Bool) {

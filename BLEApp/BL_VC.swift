@@ -154,7 +154,9 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
     func didUpdateDevices(devices: [BLEDevice]) {
         self.devices = devices
         applyFilter()
-    }
+        DispatchQueue.main.async {
+            self.tableView.reloadData()  // ✅ Ensure UI updates
+        }    }
     
     /// ✅ Filters devices based on selected segment
     @objc func segmentedControlChanged() {
