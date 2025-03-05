@@ -3,6 +3,7 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -22,16 +23,16 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <rect key="frame" x="0.0" y="0.0" width="438" height="852"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hkC-Ko-4nA">
-                    <rect key="frame" x="16" y="79" width="267" height="34"/>
+                    <rect key="frame" x="16" y="79" width="312" height="34"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>
                 </textField>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R9B-FI-WhN">
-                    <rect key="frame" x="293" y="79" width="64" height="35"/>
+                    <rect key="frame" x="338" y="79" width="64" height="35"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="64" id="12D-eN-udM"/>
                     </constraints>
@@ -42,14 +43,14 @@
                     </connections>
                 </button>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="LAD-1Y-XqD">
-                    <rect key="frame" x="16" y="129" width="361" height="350"/>
+                    <rect key="frame" x="16" y="129" width="406" height="350"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="350" id="eBR-Uh-6L8"/>
                     </constraints>
                 </tableView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KYK-1B-Rvd">
-                    <rect key="frame" x="16" y="487" width="361" height="1"/>
+                    <rect key="frame" x="16" y="487" width="406" height="1"/>
                     <color key="backgroundColor" systemColor="systemGray3Color"/>
                     <constraints>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="1" id="P5j-ea-4rT"/>
@@ -57,26 +58,26 @@
                     </constraints>
                 </view>
                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Data if received:" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="FK7-E6-0rv">
-                    <rect key="frame" x="16" y="496" width="361" height="282"/>
+                    <rect key="frame" x="16" y="496" width="406" height="282"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <color key="textColor" systemColor="labelColor"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W40-LE-Qfq">
-                    <rect key="frame" x="16" y="75" width="361" height="0.0"/>
+                    <rect key="frame" x="16" y="75" width="406" height="0.0"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <color key="textColor" systemColor="opaqueSeparatorColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Listening to:" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="hZF-I5-AW9">
-                    <rect key="frame" x="16" y="778" width="284" height="40"/>
+                    <rect key="frame" x="16" y="778" width="329" height="40"/>
                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OvX-VD-35l">
-                    <rect key="frame" x="16" y="777" width="371" height="1"/>
+                    <rect key="frame" x="16" y="777" width="416" height="1"/>
                     <color key="backgroundColor" systemColor="systemGray3Color"/>
                     <constraints>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="1" id="por-bE-TOy"/>
@@ -85,7 +86,7 @@
                     </constraints>
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xvn-Wb-ydw">
-                    <rect key="frame" x="302" y="783" width="76" height="35"/>
+                    <rect key="frame" x="347" y="783" width="76" height="35"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="76" id="qjk-3t-Lby"/>
                     </constraints>
@@ -93,6 +94,22 @@
                     <buttonConfiguration key="configuration" style="plain" title="Switch"/>
                     <connections>
                         <action selector="listenSwitchTapped:" destination="-1" eventType="touchUpInside" id="dot-tT-5Ni"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rTy-j2-r7e">
+                    <rect key="frame" x="307" y="463.33333333333331" width="98" height="35"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="35" id="MEi-Ic-eVw"/>
+                        <constraint firstAttribute="width" constant="98" id="pgG-JJ-9eU"/>
+                    </constraints>
+                    <buttonConfiguration key="configuration" style="plain" image="lasso.badge.sparkles" catalog="system" title="Ask AI" cornerStyle="medium">
+                        <backgroundConfiguration key="background">
+                            <color key="backgroundColor" name="AccentColor"/>
+                        </backgroundConfiguration>
+                        <color key="baseForegroundColor" red="0.94901961089999998" green="0.94901961089999998" blue="0.94901961089999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </buttonConfiguration>
+                    <connections>
+                        <action selector="askClicked:" destination="-1" eventType="touchUpInside" id="T9s-Ci-bsA"/>
                     </connections>
                 </button>
             </subviews>
@@ -116,9 +133,11 @@
                 <constraint firstItem="FK7-E6-0rv" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="SUU-uF-dFC"/>
                 <constraint firstAttribute="trailing" secondItem="KYK-1B-Rvd" secondAttribute="trailing" constant="16" id="Ubb-oZ-An7"/>
                 <constraint firstItem="hZF-I5-AW9" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="Uu6-Zr-ucA"/>
+                <constraint firstItem="rTy-j2-r7e" firstAttribute="firstBaseline" secondItem="KYK-1B-Rvd" secondAttribute="firstBaseline" id="W8i-RA-Egd"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="R9B-FI-WhN" secondAttribute="trailing" constant="36" id="jtH-iE-ZNb"/>
                 <constraint firstItem="hZF-I5-AW9" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="kah-mY-JOG"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="LAD-1Y-XqD" secondAttribute="trailing" constant="16" id="ki7-Ny-O7W"/>
+                <constraint firstItem="rTy-j2-r7e" firstAttribute="leading" secondItem="KYK-1B-Rvd" secondAttribute="trailing" constant="-115" id="lYa-5Q-4X0"/>
                 <constraint firstItem="hkC-Ko-4nA" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="p5i-06-4Zi"/>
                 <constraint firstItem="hZF-I5-AW9" firstAttribute="top" secondItem="FK7-E6-0rv" secondAttribute="bottom" id="qbt-Gh-Sf6"/>
                 <constraint firstItem="LAD-1Y-XqD" firstAttribute="top" secondItem="hkC-Ko-4nA" secondAttribute="bottom" constant="16" id="qdt-Qr-J3x"/>
@@ -131,6 +150,10 @@
         </view>
     </objects>
     <resources>
+        <image name="lasso.badge.sparkles" catalog="system" width="117" height="128"/>
+        <namedColor name="AccentColor">
+            <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

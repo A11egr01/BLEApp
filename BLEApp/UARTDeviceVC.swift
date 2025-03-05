@@ -51,7 +51,7 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
            tapGesture.cancelsTouchesInView = false  // Allows tableView selection
            view.addGestureRecognizer(tapGesture)
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Info", style: .plain, target: self, action: #selector(showBLEInfo))
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Info", style: .plain, target: self, action: #selector(showBLEInfo))
         
         updateConnectionStatus()
 //        NotificationCenter.default.addObserver(self, selector: #selector(handleDisconnection2(_:)), name: NSNotification.Name("DeviceDisconnected"), object: nil)
@@ -61,7 +61,278 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
               name: .deviceDisconnected,
               object: nil
           )
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+             title: "ChatGPT",
+             style: .plain,
+             target: self,
+             action: #selector(askChatGPTForIdeas)
+         )
     }
+    
+    @IBAction func askClicked(_ sender: UIButton) {
+        askChatGPTForIdeas()
+    }
+    
+    
+    @objc private func askChatGPTForIdeas() {
+        let responseText = responseTextView.text ?? ""
+
+        guard !responseText.isEmpty else {
+            showAlert(title: "Error", message: "No data in the response view to analyze.")
+            return
+        }
+
+        let alert = UIAlertController(title: "Analyzing...", message: "Asking AI for ideas...", preferredStyle: .alert)
+        present(alert, animated: true, completion: nil)
+
+        askChatGPT(prompt: responseText) { [weak self] result in
+            DispatchQueue.main.async {
+                alert.dismiss(animated: true) {
+                    switch result {
+                    case .success(let response):
+                        self?.showAIGuessVC(with: response)
+                    case .failure(let error):
+                        self?.showAlert(title: "Error", message: error.localizedDescription)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func showAIGuessVC(with aiResponse: String) {
+        let aiVC = AIGuessVC(nibName: "AIGuessVC", bundle: nil)
+
+        _ = aiVC.view
+        let responseParts = aiResponse.components(separatedBy: "\n\n") // Split AI response into sections
+        let probableDevice = responseParts.first ?? "Unknown Device"
+
+        aiVC.deviceTitle.text = probableDevice
+        aiVC.findingsLabel.text = aiResponse // Full AI response
+
+        // ✅ Convert AI response into structured command data
+        let parsedSignals = parseUARTCommands(from: aiResponse)
+
+        DispatchQueue.main.async {
+            aiVC.possibleSignals = parsedSignals
+            aiVC.signalTable.reloadData()
+        }
+
+        aiVC.modalPresentationStyle = .overCurrentContext
+        aiVC.modalTransitionStyle = .crossDissolve
+        present(aiVC, animated: true, completion: nil)
+    }
+
+
+    
+//    func requestAIUARTSignals(for device: String, completion: @escaping ([[String: String]]) -> Void) {
+//        // Simulated AI-generated response
+//        let generatedSignals = [
+//            ["Command ID": "0x01", "Function": "Request Device Status", "Description": "Requests the current status of the device, including battery level."],
+//            ["Command ID": "0x10", "Function": "Unlock Device", "Description": "Sends an unlock request to the device."]
+//        ]
+//
+//        completion(generatedSignals) // Now returns the correct format
+//    }
+    
+    func parseUARTCommands(from response: String) -> [[String: String]] {
+        var parsedCommands: [[String: String]] = []
+        
+        // Find the "Possible UART Commands Table" section
+        guard let tableStartRange = response.range(of: "**Possible UART Commands Table:**") else {
+            print("⚠️ No command table found in response")
+            return []
+        }
+        
+        let tableContent = response[tableStartRange.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        // Extract rows
+        let tableLines = tableContent.components(separatedBy: "\n")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        
+        // Start processing table only when headers are found
+        var processingTable = false
+        
+        for row in tableLines {
+            let cleanRow = row.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            // Skip header row dynamically
+            if cleanRow.contains("| Command ID | Function") {
+                processingTable = true
+                continue
+            }
+
+            if processingTable {
+                // Split by '|' and remove empty elements
+                let columns = cleanRow.components(separatedBy: "|")
+                    .map { $0.trimmingCharacters(in: .whitespaces) }
+                    .filter { !$0.isEmpty }
+                
+                // Ensure we get 4 columns (Command ID, Function, Description, HEX Data)
+                if columns.count == 4 {
+                    let commandDict: [String: String] = [
+                        "Command ID": columns[0],
+                        "Function": columns[1],
+                        "Description": columns[2],
+                        "HEX Data": columns[3] // New column added
+                    ]
+                    parsedCommands.append(commandDict)
+                }
+            }
+        }
+        
+        if parsedCommands.isEmpty {
+            print("⚠️ No commands were extracted from the table. Check AI response formatting.")
+        } else {
+            print("✅ Extracted \(parsedCommands.count) commands.")
+        }
+        
+        return parsedCommands
+    }
+
+
+
+    
+//    private func requestAIUARTSignals(for deviceName: String, completion: @escaping ([String]) -> Void) {
+//        let prompt = """
+//        Given that this is a \(deviceName), what common UART commands or AT commands can be sent to it?
+//        List them as bullet points with short descriptions.
+//        """
+//
+//        askChatGPT(prompt: prompt) { result in
+//            switch result {
+//            case .success(let response):
+//                let signals = response.components(separatedBy: "\n").filter { !$0.isEmpty }
+//                completion(signals)
+//            case .failure:
+//                completion(["No AI-generated signals found."])
+//            }
+//        }
+//    }
+ 
+
+    private func askChatGPT(prompt: String, completion: @escaping (Result<String, Error>) -> Void) {
+        
+        let apiKey = ProcessInfo.processInfo.environment["OPENAI_API_KEY"] ?? ""
+
+        let url = URL(string: "https://api.openai.com/v1/chat/completions")!
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let fullPrompt = """
+        You are a highly knowledgeable assistant specializing in analyzing BLE (Bluetooth Low Energy) UART communication logs.
+
+        Your task is to:
+        1. **Identify the type of device** based purely on the provided UART log.
+        2. **Extract relevant characteristics and values** based on known BLE GATT characteristics (e.g., battery level, firmware, manufacturer, serial number).
+        3. **Suggest only commands that match the detected device type** (e.g., audio controls for headphones, unlock commands for smart locks).
+        4. **Return a structured table listing all possible commands**, including:
+           - **Command ID** (e.g., `0x10`)
+           - **Function** (e.g., `Unlock Device`)
+           - **Description** (e.g., `Sends an unlock request to the device`)
+           - **HEX Data (if applicable)**
+
+        Provide UART commands only if they are clearly related to the identified device. Avoid making assumptions beyond the data provided.
+
+        Here is the UART communication log to analyze:
+        
+        ```
+        \(prompt)
+        ```
+
+        Return the response in the following format:
+        - **Device Type:** (Detected device type)
+        - **Extracted Characteristics:**
+          - [Characteristic Name]: [Value]
+          - [Characteristic Name]: [Value]
+        - **Possible UART Commands Table:**
+
+        | Command ID | Function | Description | HEX Data |
+        |------------|----------|-------------|----------|
+        | 0x01       | Request Device Status | Requests device health and battery | 64 |
+        | 0x02       | Request Serial Number | Retrieves the device serial number | 53 4E ... |
+        | 0x03       | Request Manufacturer | Retrieves manufacturer info | 53 63 69 ... |
+        | 0x10       | Unlock Device | Sends an unlock request to the device | 00 00 00 |
+        | 0x11       | Lock Device | Sends a lock request | 00 00 00 |
+        | 0x12       | Get Last Unlock Record | Retrieves last unlock attempt | --- |
+        | 0x20       | Register RFID Card | Registers a new RFID card | 53 4E ... |
+        | 0x21       | Delete RFID Card | Removes an RFID card from memory | --- |
+        | 0x22       | List Registered RFID Cards | Retrieves stored RFID cards | --- |
+        | 0x30       | Request Remote Unlock Code | Generates a one-time unlock code | --- |
+        | 0x31       | Validate Unlock Request | Verifies an unlock attempt | --- |
+        | 0x32       | Sync Time with Device | Synchronizes lock time with phone | --- |
+        | 0x40       | Retrieve Unlock History | Gets unlock history logs | --- |
+        | 0x41       | Clear Unlock Logs | Erases all unlock logs | --- |
+
+        Please provide all **possible UART commands**, even if they are inferred based on known BLE device communication patterns.
+        
+        If the device type is unclear, state:
+        "Unknown BLE device. Based on the available data, I cannot determine the exact type. Please provide additional details or check manufacturer documentation."
+        """
+
+        let requestBody: [String: Any] = [
+            "model": "gpt-4-turbo",  // Use GPT-4 turbo for best results
+            "messages": [
+                ["role": "system", "content": "You are a helpful assistant that identifies BLE devices based on their UART communication logs."],
+                ["role": "user", "content": fullPrompt]
+            ],
+            "max_tokens": 250, // Increase response size
+            "temperature": 0.2 // Make responses more consistent
+        ]
+
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: requestBody, options: []) else {
+            completion(.failure(NSError(domain: "Invalid request body", code: -1, userInfo: nil)))
+            return
+        }
+        request.httpBody = httpBody
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NSError(domain: "No data received", code: -1, userInfo: nil)))
+                return
+            }
+            
+            // Debug: Print the raw response
+            if let rawResponse = String(data: data, encoding: .utf8) {
+                print("Raw API Response sap13: \(rawResponse)")
+            }
+            
+            // Parse the response
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    if let choices = json["choices"] as? [[String: Any]],
+                       let firstChoice = choices.first,
+                       let message = firstChoice["message"] as? [String: Any],
+                       let content = message["content"] as? String {
+                        completion(.success(content))
+                    } else {
+                        completion(.failure(NSError(domain: "Invalid response format", code: -1, userInfo: nil)))
+                    }
+                } else {
+                    completion(.failure(NSError(domain: "Invalid JSON format", code: -1, userInfo: nil)))
+                }
+            } catch {
+                completion(.failure(error))
+            }
+        }
+        task.resume()
+    }
+
+        private func showAlert(title: String, message: String) {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            present(alert, animated: true, completion: nil)
+        }
+    
     
     deinit {
           // Remove the observer when the view controller is deallocated
@@ -75,7 +346,7 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         } else {
             statusLabel.text = "❌ Disconnected"
             statusLabel.textColor = .systemRed
-            responseTextView.text = "" 
+            responseTextView.text = ""
 //            handleDisconnection()
         }
     }
@@ -276,6 +547,7 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         } else {
             translatedData = translateCharacteristicValue(data: data)
         }
+        
         
         let hexData = data.map { String(format: "%02X", $0) }.joined(separator: " ")
 

@@ -1,0 +1,45 @@
+
+# Xcode
+*.xcuserstate
+*.xcscmblueprint
+*.xcworkspace/xcuserdata/
+.DS_Store
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# CocoaPods
+Pods/
+DerivedData/
+xcuserdata/
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+
+# Ignore logs
+*.log
+*.swp
+*.swo
+*.swn
+
+# Environment variables and sensitive files
+*.xcconfig
+secrets.env
+
+# Ignore user-specific Xcode settings
+BLEApp.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Ignore build artifacts
+DerivedData/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
