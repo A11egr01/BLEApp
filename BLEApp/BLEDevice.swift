@@ -6,9 +6,11 @@
 //
 
 import CoreBluetooth
+import ExternalAccessory
 
 class BLEDevice {
-    var peripheral: CBPeripheral
+    var accessory: EAAccessory? // For Bluetooth Classic
+    var peripheral: CBPeripheral // For BLE
     var rssi: NSNumber
     var manufacturer: String
     var manufacturerCode: String
@@ -31,6 +33,10 @@ class BLEDevice {
             self.lastSeenTimestamp = timestamp
         }
     }
+    
+//    init(accessory: EAAccessory) {
+//        self.accessory = accessory
+//    }
     
     // Helper to store discovered characteristics for a service
     func addCharacteristics(for service: CBService, characteristics: [CBCharacteristic]) {

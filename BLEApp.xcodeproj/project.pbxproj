@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E0076652D79140F005F7EDD /* TransparentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0076632D79140F005F7EDD /* TransparentVC.swift */; };
+		8E0076662D79140F005F7EDD /* TransparentVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E0076642D79140F005F7EDD /* TransparentVC.xib */; };
 		8E04453C2D68C0B000E47555 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E04453B2D68C0B000E47555 /* AppDelegate.swift */; };
 		8E04453E2D68C0B000E47555 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E04453D2D68C0B000E47555 /* SceneDelegate.swift */; };
 		8E0445402D68C0B000E47555 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E04453F2D68C0B000E47555 /* ViewController.swift */; };
@@ -61,6 +63,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8E0076632D79140F005F7EDD /* TransparentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransparentVC.swift; sourceTree = "<group>"; };
+		8E0076642D79140F005F7EDD /* TransparentVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransparentVC.xib; sourceTree = "<group>"; };
 		8E0445382D68C0B000E47555 /* BLEApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BLEApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E04453B2D68C0B000E47555 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8E04453D2D68C0B000E47555 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -128,6 +132,57 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8E0076602D791117005F7EDD /* Initial */ = {
+			isa = PBXGroup;
+			children = (
+				8E04453B2D68C0B000E47555 /* AppDelegate.swift */,
+				8E04453D2D68C0B000E47555 /* SceneDelegate.swift */,
+				8E0445412D68C0B000E47555 /* Main.storyboard */,
+				8E04453F2D68C0B000E47555 /* ViewController.swift */,
+			);
+			path = Initial;
+			sourceTree = "<group>";
+		};
+		8E0076612D791139005F7EDD /* VC's */ = {
+			isa = PBXGroup;
+			children = (
+				8E04456B2D68C0ED00E47555 /* BL_VC.swift */,
+				8E04456C2D68C0ED00E47555 /* BL_VC.xib */,
+				8E0076632D79140F005F7EDD /* TransparentVC.swift */,
+				8E0076642D79140F005F7EDD /* TransparentVC.xib */,
+				8E74CC942D6B085A004CF10D /* UARTDeviceVC.swift */,
+				8E74CC952D6B085A004CF10D /* UARTDeviceVC.xib */,
+				8E0E92D52D68EBB4008BF11D /* ReadDataVC.swift */,
+				8E0E92D62D68EBB4008BF11D /* ReadDataVC.xib */,
+				8E04457B2D68CCE800E47555 /* DeviceDetailsVC.swift */,
+				8E04457C2D68CCE800E47555 /* DeviceDetailsVC.xib */,
+				8ED2B6A72D6DE3DA0041C6E5 /* AutoConnectVC.swift */,
+				8ED2B6A82D6DE3DA0041C6E5 /* AutoConnectVC.xib */,
+				8E0E92D92D68ED53008BF11D /* DeviceInfoVC.swift */,
+				8E0E92DA2D68ED53008BF11D /* DeviceInfoVC.xib */,
+				8E0E92D12D68E327008BF11D /* NotifyDataVC.swift */,
+				8E0E92D22D68E327008BF11D /* NotifyDataVC.xib */,
+				8E74CC982D6B2E66004CF10D /* BLEInfoVC.swift */,
+				8E74CC992D6B2E66004CF10D /* BLEInfoVC.xib */,
+				8E68DF332D790E7A00CE74AF /* AIGuessVC.swift */,
+				8E68DF342D790E7A00CE74AF /* AIGuessVC.xib */,
+				8ED2B6A32D6CD98D0041C6E5 /* MethodSwitcherVC.swift */,
+				8ED2B6A02D6C91F00041C6E5 /* MethodSwitcherVC.xib */,
+			);
+			path = "VC's";
+			sourceTree = "<group>";
+		};
+		8E0076622D79116C005F7EDD /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				8E68DF372D790E8F00CE74AF /* SignalCell.swift */,
+				8E68DF362D790E8E00CE74AF /* SignalCell.xib */,
+				8E0445712D68C3B200E47555 /* BLEDeviceCell.swift */,
+				8E0445722D68C3B200E47555 /* BLEDeviceCell.xib */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		8E04452F2D68C0B000E47555 = {
 			isa = PBXGroup;
 			children = (
@@ -151,37 +206,12 @@
 		8E04453A2D68C0B000E47555 /* BLEApp */ = {
 			isa = PBXGroup;
 			children = (
-				8E04453B2D68C0B000E47555 /* AppDelegate.swift */,
-				8E04453D2D68C0B000E47555 /* SceneDelegate.swift */,
-				8E04453F2D68C0B000E47555 /* ViewController.swift */,
+				8E0076602D791117005F7EDD /* Initial */,
+				8E0076612D791139005F7EDD /* VC's */,
+				8E0076622D79116C005F7EDD /* Cells */,
 				8E04456F2D68C30B00E47555 /* BLEManager.swift */,
-				8E04456B2D68C0ED00E47555 /* BL_VC.swift */,
-				8E04456C2D68C0ED00E47555 /* BL_VC.xib */,
-				8E0E92D52D68EBB4008BF11D /* ReadDataVC.swift */,
-				8E0E92D62D68EBB4008BF11D /* ReadDataVC.xib */,
-				8E04457B2D68CCE800E47555 /* DeviceDetailsVC.swift */,
-				8E04457C2D68CCE800E47555 /* DeviceDetailsVC.xib */,
-				8ED2B6A72D6DE3DA0041C6E5 /* AutoConnectVC.swift */,
-				8ED2B6A82D6DE3DA0041C6E5 /* AutoConnectVC.xib */,
-				8E0E92D92D68ED53008BF11D /* DeviceInfoVC.swift */,
-				8E0E92DA2D68ED53008BF11D /* DeviceInfoVC.xib */,
-				8E0E92D12D68E327008BF11D /* NotifyDataVC.swift */,
-				8E0E92D22D68E327008BF11D /* NotifyDataVC.xib */,
-				8E74CC942D6B085A004CF10D /* UARTDeviceVC.swift */,
-				8E74CC952D6B085A004CF10D /* UARTDeviceVC.xib */,
-				8E68DF332D790E7A00CE74AF /* AIGuessVC.swift */,
-				8E68DF342D790E7A00CE74AF /* AIGuessVC.xib */,
-				8E68DF372D790E8F00CE74AF /* SignalCell.swift */,
-				8E68DF362D790E8E00CE74AF /* SignalCell.xib */,
-				8ED2B6A32D6CD98D0041C6E5 /* MethodSwitcherVC.swift */,
-				8ED2B6A02D6C91F00041C6E5 /* MethodSwitcherVC.xib */,
-				8E0445412D68C0B000E47555 /* Main.storyboard */,
 				8E04457F2D68CE8800E47555 /* BLEDevice.swift */,
-				8E0445712D68C3B200E47555 /* BLEDeviceCell.swift */,
-				8E0445722D68C3B200E47555 /* BLEDeviceCell.xib */,
 				8E0445752D68C75100E47555 /* knownManufacturers.swift */,
-				8E74CC982D6B2E66004CF10D /* BLEInfoVC.swift */,
-				8E74CC992D6B2E66004CF10D /* BLEInfoVC.xib */,
 				8E0445442D68C0B500E47555 /* Assets.xcassets */,
 				8E0445462D68C0B500E47555 /* LaunchScreen.storyboard */,
 				8E0445492D68C0B500E47555 /* Info.plist */,
@@ -321,6 +351,7 @@
 				8E0445452D68C0B500E47555 /* Assets.xcassets in Resources */,
 				8E0E92D42D68E327008BF11D /* NotifyDataVC.xib in Resources */,
 				8E0E92D82D68EBB4008BF11D /* ReadDataVC.xib in Resources */,
+				8E0076662D79140F005F7EDD /* TransparentVC.xib in Resources */,
 				8E0445432D68C0B000E47555 /* Main.storyboard in Resources */,
 				8E04457E2D68CCE800E47555 /* DeviceDetailsVC.xib in Resources */,
 			);
@@ -364,6 +395,7 @@
 				8E0445762D68C75100E47555 /* knownManufacturers.swift in Sources */,
 				8E0445732D68C3B200E47555 /* BLEDeviceCell.swift in Sources */,
 				8E0E92D72D68EBB4008BF11D /* ReadDataVC.swift in Sources */,
+				8E0076652D79140F005F7EDD /* TransparentVC.swift in Sources */,
 				8E04457D2D68CCE800E47555 /* DeviceDetailsVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
