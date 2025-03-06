@@ -8,8 +8,20 @@
 import CoreBluetooth
 import ExternalAccessory
 
+class FM12Device {
+    var accessory: EAAccessory  
+    
+    init(accessory: EAAccessory) {
+        self.accessory = accessory
+    }
+    
+    var name: String {
+        return accessory.name
+    }
+}
+
 class BLEDevice {
-    var accessory: EAAccessory? // For Bluetooth Classic
+//    var accessory: EAAccessory? // For Bluetooth Classic
     var peripheral: CBPeripheral // For BLE
     var rssi: NSNumber
     var manufacturer: String
@@ -22,6 +34,7 @@ class BLEDevice {
     var readValues: [CBUUID: String] = [:]  // ✅ Stores read characteristic values
     var lastSeenTimestamp: TimeInterval?  // ✅ Store kCBAdvDataTimestamp
 
+    // Initializer for BLE devices
     init(peripheral: CBPeripheral, rssi: NSNumber, manufacturer: String, manufacturerCode: String, advertisementData: [String: Any]) {
         self.peripheral = peripheral
         self.rssi = rssi
@@ -34,6 +47,7 @@ class BLEDevice {
         }
     }
     
+    // Initializer for Bluetooth Classic devices
 //    init(accessory: EAAccessory) {
 //        self.accessory = accessory
 //    }
@@ -42,6 +56,5 @@ class BLEDevice {
     func addCharacteristics(for service: CBService, characteristics: [CBCharacteristic]) {
         self.characteristics[service] = characteristics
     }
-    
 }
 

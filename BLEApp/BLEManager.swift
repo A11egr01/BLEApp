@@ -6,6 +6,7 @@
 //
 
 import CoreBluetooth
+import ExternalAccessory
 import UIKit
 
 protocol BLEManagerDelegate: AnyObject {
@@ -21,6 +22,8 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     var centralManager: CBCentralManager!
     var discoveredDevices: [BLEDevice] = []
     var connectedDevices: [BLEDevice] = []
+    var classicDevices: [EAAccessory] = []
+
     weak var delegate: BLEManagerDelegate?
     
     var autoConnectDevices: [UUID] {
@@ -37,6 +40,11 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     override init() {
         super.init()
         centralManager = CBCentralManager(delegate: self, queue: DispatchQueue.global(qos: .background))
+        classicDevices = EAAccessoryManager.shared().connectedAccessories
+    }
+    
+    func getClassicDevice(named deviceName: String) -> EAAccessory? {
+        return classicDevices.first { $0.name == deviceName }
     }
 
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -44,6 +52,8 @@ class BLEManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
             print("Bluetooth is ON. Scanning for devices...")
             centralManager.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: false])
             
+            classicDevices = EAAccessoryManager.shared().connectedAccessories // ✅ Refresh Bluetooth Classic devices
+
             // ✅ Attempt to Auto-Connect to saved devices
             autoReconnectDevices()
 

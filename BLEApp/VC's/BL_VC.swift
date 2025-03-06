@@ -16,6 +16,7 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
     
     var bleManager = BLEManager()
     var devices: [BLEDevice] = []
+
     var filteredDevices: [BLEDevice] = []
     let refreshControl = UIRefreshControl()
     var bluetoothIconView: UIImageView!  // ✅ Bluetooth icon
@@ -166,10 +167,34 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedDevice = filteredDevices[indexPath.row]
-        let detailsVC = MethodSwitcherVC()
-        detailsVC.title = selectedDevice.peripheral.name ?? "No name"
-        detailsVC.selectedDevice = selectedDevice
-        navigationController?.pushViewController(detailsVC, animated: true)
+
+        if selectedDevice.peripheral.name == "FM12" {
+            print("📡 FM12 detected! Using FM12Device class.")
+
+            // ✅ Get the corresponding EAAccessory from BLEManager
+            if let fm12Accessory = bleManager.getClassicDevice(named: "FM12") {
+                
+                // ✅ Create an FM12-specific device object
+                let fm12Device = FM12Device(accessory: fm12Accessory)
+
+                // ✅ Open TransparentVC with FM12Device
+                let transparentVC = TransparentVC()
+                transparentVC.selectedDevice = fm12Device
+                navigationController?.pushViewController(transparentVC, animated: true)
+
+            } else {
+                print("❌ FM12 accessory not found!")
+            }
+
+        } else {
+            print("🛠 Normal BLE device detected! Opening MethodSwitcherVC...")
+            
+            // ✅ Open the standard BLE device screen
+            let detailsVC = MethodSwitcherVC()
+            detailsVC.title = selectedDevice.peripheral.name ?? "No name"
+            detailsVC.selectedDevice = selectedDevice
+            navigationController?.pushViewController(detailsVC, animated: true)
+        }
     }
     
     // 🔹 Called when user pulls down to refresh
