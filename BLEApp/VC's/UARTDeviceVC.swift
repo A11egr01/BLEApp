@@ -347,7 +347,7 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
             statusLabel.text = "❌ Disconnected"
             statusLabel.textColor = .systemRed
             responseTextView.text = ""
-//            handleDisconnection()
+            handleDisconnection()
         }
     }
     

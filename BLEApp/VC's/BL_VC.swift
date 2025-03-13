@@ -30,10 +30,20 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
         return button
     }()
     
+    private let noDevicesLabel: UILabel = {
+        let label = UILabel()
+        label.text = "No devices detected"
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        label.textColor = .gray
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "BLE devices"
-
+        self.addNoDeviceLabel()
         self.navigationItem.hidesBackButton = true
         
         toggle.insertSegment(withTitle: "iPhones", at: 2, animated: false)
@@ -50,6 +60,22 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
         setAutoVCButton()
         updateAutoConnectButtonState()
         educationalLabel()
+    }
+    
+    func addNoDeviceLabel() {
+        view.addSubview(noDevicesLabel)
+           
+           // Center the label in the view
+           NSLayoutConstraint.activate([
+               noDevicesLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+               noDevicesLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+           ])
+    }
+    
+    private func updateDeviceLabelVisibility() {
+        DispatchQueue.main.async {
+            self.noDevicesLabel.isHidden = !self.filteredDevices.isEmpty
+        }
     }
     
     func educationalLabel() {
@@ -162,7 +188,10 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
         default:
             break
         }
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+            self.updateDeviceLabelVisibility()
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
