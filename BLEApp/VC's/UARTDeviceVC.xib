@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UARTDeviceVC" customModule="BLEApp" customModuleProvider="target">
             <connections>
+                <outlet property="getFMButton" destination="H95-1b-TpQ" id="Wx6-d4-ano"/>
                 <outlet property="listenSwitch" destination="xvn-Wb-ydw" id="i8Z-Sp-dHm"/>
                 <outlet property="listeningLabel" destination="hZF-I5-AW9" id="1rI-i4-00a"/>
                 <outlet property="responseTextView" destination="FK7-E6-0rv" id="ZBh-29-iSB"/>
@@ -23,16 +24,16 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="438" height="852"/>
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hkC-Ko-4nA">
-                    <rect key="frame" x="16" y="79" width="312" height="34"/>
+                    <rect key="frame" x="16" y="79" width="267" height="34"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>
                 </textField>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R9B-FI-WhN">
-                    <rect key="frame" x="338" y="79" width="64" height="35"/>
+                    <rect key="frame" x="293" y="79" width="64" height="35"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="64" id="12D-eN-udM"/>
                     </constraints>
@@ -43,14 +44,14 @@
                     </connections>
                 </button>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="LAD-1Y-XqD">
-                    <rect key="frame" x="16" y="129" width="406" height="350"/>
+                    <rect key="frame" x="16" y="129" width="361" height="350"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="350" id="eBR-Uh-6L8"/>
                     </constraints>
                 </tableView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KYK-1B-Rvd">
-                    <rect key="frame" x="16" y="487" width="406" height="1"/>
+                    <rect key="frame" x="16" y="487" width="361" height="1"/>
                     <color key="backgroundColor" systemColor="systemGray3Color"/>
                     <constraints>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="1" id="P5j-ea-4rT"/>
@@ -58,26 +59,26 @@
                     </constraints>
                 </view>
                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Data if received:" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="FK7-E6-0rv">
-                    <rect key="frame" x="16" y="496" width="406" height="282"/>
+                    <rect key="frame" x="16" y="496" width="361" height="282"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <color key="textColor" systemColor="labelColor"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W40-LE-Qfq">
-                    <rect key="frame" x="16" y="75" width="406" height="0.0"/>
+                    <rect key="frame" x="16" y="75" width="361" height="0.0"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <color key="textColor" systemColor="opaqueSeparatorColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Listening to:" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="hZF-I5-AW9">
-                    <rect key="frame" x="16" y="778" width="329" height="40"/>
+                    <rect key="frame" x="16" y="778" width="284" height="40"/>
                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OvX-VD-35l">
-                    <rect key="frame" x="16" y="777" width="416" height="1"/>
+                    <rect key="frame" x="16" y="777" width="371" height="1"/>
                     <color key="backgroundColor" systemColor="systemGray3Color"/>
                     <constraints>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="1" id="por-bE-TOy"/>
@@ -85,8 +86,21 @@
                         <constraint firstAttribute="height" relation="lessThanOrEqual" constant="1" id="vbv-fa-kLp"/>
                     </constraints>
                 </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H95-1b-TpQ">
+                    <rect key="frame" x="262" y="420" width="95" height="35"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="35" id="4ho-5I-a6q"/>
+                        <constraint firstAttribute="width" constant="95" id="M33-Mo-xL6"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="filled" title="GET FM"/>
+                    <connections>
+                        <action selector="getFMButtonTapped:" destination="-1" eventType="touchUpInside" id="f0m-c9-J24"/>
+                        <action selector="sendCommand" destination="-1" eventType="touchUpInside" id="m6E-y7-Knu"/>
+                    </connections>
+                </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xvn-Wb-ydw">
-                    <rect key="frame" x="347" y="783" width="76" height="35"/>
+                    <rect key="frame" x="302" y="783" width="76" height="35"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="76" id="qjk-3t-Lby"/>
                     </constraints>
@@ -97,7 +111,7 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rTy-j2-r7e">
-                    <rect key="frame" x="307" y="463.33333333333331" width="98" height="35"/>
+                    <rect key="frame" x="262" y="463.33333333333331" width="98" height="35"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="35" id="MEi-Ic-eVw"/>
                         <constraint firstAttribute="width" constant="98" id="pgG-JJ-9eU"/>
@@ -120,6 +134,7 @@
                 <constraint firstItem="hZF-I5-AW9" firstAttribute="top" secondItem="OvX-VD-35l" secondAttribute="bottom" id="3d2-FZ-u8p"/>
                 <constraint firstItem="hkC-Ko-4nA" firstAttribute="top" secondItem="W40-LE-Qfq" secondAttribute="bottom" constant="4" id="7uB-El-uHR"/>
                 <constraint firstItem="KYK-1B-Rvd" firstAttribute="top" secondItem="LAD-1Y-XqD" secondAttribute="bottom" constant="8" symbolic="YES" id="A6N-lp-yVP"/>
+                <constraint firstItem="rTy-j2-r7e" firstAttribute="top" secondItem="H95-1b-TpQ" secondAttribute="bottom" constant="8.3300000000000001" id="Aun-KI-5ES"/>
                 <constraint firstItem="KYK-1B-Rvd" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="16" id="CPl-a7-Pak"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="xvn-Wb-ydw" secondAttribute="trailing" constant="15" id="Dtk-KK-7GN"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="FK7-E6-0rv" secondAttribute="trailing" constant="16" id="Fc3-Tf-pYN"/>
@@ -134,6 +149,7 @@
                 <constraint firstAttribute="trailing" secondItem="KYK-1B-Rvd" secondAttribute="trailing" constant="16" id="Ubb-oZ-An7"/>
                 <constraint firstItem="hZF-I5-AW9" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="Uu6-Zr-ucA"/>
                 <constraint firstItem="rTy-j2-r7e" firstAttribute="firstBaseline" secondItem="KYK-1B-Rvd" secondAttribute="firstBaseline" id="W8i-RA-Egd"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="H95-1b-TpQ" secondAttribute="trailing" constant="36" id="cWU-ao-MB3"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="R9B-FI-WhN" secondAttribute="trailing" constant="36" id="jtH-iE-ZNb"/>
                 <constraint firstItem="hZF-I5-AW9" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="kah-mY-JOG"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="LAD-1Y-XqD" secondAttribute="trailing" constant="16" id="ki7-Ny-O7W"/>

@@ -17,6 +17,7 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var responseTextView: UITextView!
 
+    @IBOutlet weak var getFMButton: UIButton!
     @IBOutlet weak var listenSwitch: UIButton!
     @IBOutlet weak var listeningLabel: UILabel!
     
@@ -210,6 +211,14 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
 //            }
 //        }
 //    }
+    
+    func appendToResponseViewFM(_ message: String) {
+        DispatchQueue.main.async {
+            self.responseTextView.text.append("\n\(message)")
+            let range = NSMakeRange(self.responseTextView.text.count - 1, 1)
+            self.responseTextView.scrollRangeToVisible(range)
+        }
+    }
  
 
     private func askChatGPT(prompt: String, completion: @escaping (Result<String, Error>) -> Void) {
@@ -332,7 +341,6 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             present(alert, animated: true, completion: nil)
         }
-    
     
     deinit {
           // Remove the observer when the view controller is deallocated
@@ -824,6 +832,38 @@ class UARTDeviceVC: UIViewController, UITableViewDataSource, UITableViewDelegate
             
             present(alert, animated: true, completion: nil)
         }
+    
+    @IBAction func getFMButtonTapped(_ sender: UIButton) {
+        guard !writeCharacteristics.isEmpty else {
+            showAlert(title: "Error", message: "No writable characteristics found!")
+            return
+        }
+        
+        if writeCharacteristics.count == 1 {
+            openFMGetViewController(with: writeCharacteristics.first!)
+        } else {
+            let alert = UIAlertController(title: "Select TX Characteristic", message: "Multiple writable characteristics found.", preferredStyle: .actionSheet)
+
+            for characteristic in writeCharacteristics {
+                alert.addAction(UIAlertAction(title: characteristic.uuid.uuidString, style: .default, handler: { _ in
+                    self.openFMGetViewController(with: characteristic)
+                }))
+            }
+
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            present(alert, animated: true)
+        }
+    }
+
+    private func openFMGetViewController(with characteristic: CBCharacteristic) {
+        let fmVC = FMGetViewController()
+        fmVC.selectedCharacteristic = characteristic
+        fmVC.parentVC = self
+        fmVC.peripheral = selectedDevice.peripheral
+        fmVC.modalPresentationStyle = .formSheet
+        present(fmVC, animated: true)
+    }
+
 }
 
 extension UITextView {

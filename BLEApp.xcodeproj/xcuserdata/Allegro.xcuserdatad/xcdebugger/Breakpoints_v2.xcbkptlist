@@ -3,4 +3,54 @@
    uuid = "A0C47531-701D-450C-9767-051D1D75CD57"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A7FAF062-D90B-43A2-B4DD-DA16934D5D17"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BLEApp/VC&apos;s/UARTDeviceVC.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "216"
+            endingLineNumber = "216"
+            landmarkName = "appendToResponseViewFM(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "A7FAF062-D90B-43A2-B4DD-DA16934D5D17 - 74a3cf55b480d6f3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BLEApp.UARTDeviceVC.appendToResponseViewFM(Swift.String) -&gt; ()"
+                  moduleName = "BLEApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Allegro/Documents/BLEApp/BLEApp/VC&apos;s/UARTDeviceVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "216"
+                  endingLineNumber = "216"
+                  offsetFromSymbolStart = "236">
+               </Location>
+               <Location
+                  uuid = "A7FAF062-D90B-43A2-B4DD-DA16934D5D17 - eb6d6bb23aad346d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in BLEApp.UARTDeviceVC.appendToResponseViewFM(Swift.String) -&gt; ()"
+                  moduleName = "BLEApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Allegro/Documents/BLEApp/BLEApp/VC&apos;s/UARTDeviceVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "216"
+                  endingLineNumber = "216"
+                  offsetFromSymbolStart = "120">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

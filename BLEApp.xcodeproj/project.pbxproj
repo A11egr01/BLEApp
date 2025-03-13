@@ -33,6 +33,8 @@
 		8E0E92D82D68EBB4008BF11D /* ReadDataVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E0E92D62D68EBB4008BF11D /* ReadDataVC.xib */; };
 		8E0E92DB2D68ED53008BF11D /* DeviceInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0E92D92D68ED53008BF11D /* DeviceInfoVC.swift */; };
 		8E0E92DC2D68ED53008BF11D /* DeviceInfoVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E0E92DA2D68ED53008BF11D /* DeviceInfoVC.xib */; };
+		8E4BB53E2D8329950098BA7A /* FMGetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4BB53C2D8329950098BA7A /* FMGetViewController.swift */; };
+		8E4BB53F2D8329950098BA7A /* FMGetViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E4BB53D2D8329950098BA7A /* FMGetViewController.xib */; };
 		8E68DF352D790E7A00CE74AF /* AIGuessVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E68DF332D790E7A00CE74AF /* AIGuessVC.swift */; };
 		8E68DF382D790E8F00CE74AF /* SignalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E68DF372D790E8F00CE74AF /* SignalCell.swift */; };
 		8E74CC962D6B085A004CF10D /* UARTDeviceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E74CC942D6B085A004CF10D /* UARTDeviceVC.swift */; };
@@ -93,6 +95,8 @@
 		8E0E92D62D68EBB4008BF11D /* ReadDataVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReadDataVC.xib; sourceTree = "<group>"; };
 		8E0E92D92D68ED53008BF11D /* DeviceInfoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoVC.swift; sourceTree = "<group>"; };
 		8E0E92DA2D68ED53008BF11D /* DeviceInfoVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DeviceInfoVC.xib; sourceTree = "<group>"; };
+		8E4BB53C2D8329950098BA7A /* FMGetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FMGetViewController.swift; sourceTree = "<group>"; };
+		8E4BB53D2D8329950098BA7A /* FMGetViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FMGetViewController.xib; sourceTree = "<group>"; };
 		8E68DF332D790E7A00CE74AF /* AIGuessVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuessVC.swift; sourceTree = "<group>"; };
 		8E68DF342D790E7A00CE74AF /* AIGuessVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AIGuessVC.xib; sourceTree = "<group>"; };
 		8E68DF362D790E8E00CE74AF /* SignalCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SignalCell.xib; sourceTree = "<group>"; };
@@ -152,6 +156,8 @@
 				8E0076642D79140F005F7EDD /* TransparentVC.xib */,
 				8E74CC942D6B085A004CF10D /* UARTDeviceVC.swift */,
 				8E74CC952D6B085A004CF10D /* UARTDeviceVC.xib */,
+				8E4BB53C2D8329950098BA7A /* FMGetViewController.swift */,
+				8E4BB53D2D8329950098BA7A /* FMGetViewController.xib */,
 				8E0E92D52D68EBB4008BF11D /* ReadDataVC.swift */,
 				8E0E92D62D68EBB4008BF11D /* ReadDataVC.xib */,
 				8E04457B2D68CCE800E47555 /* DeviceDetailsVC.swift */,
@@ -354,6 +360,7 @@
 				8E0076662D79140F005F7EDD /* TransparentVC.xib in Resources */,
 				8E0445432D68C0B000E47555 /* Main.storyboard in Resources */,
 				8E04457E2D68CCE800E47555 /* DeviceDetailsVC.xib in Resources */,
+				8E4BB53F2D8329950098BA7A /* FMGetViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,6 +399,7 @@
 				8E04453C2D68C0B000E47555 /* AppDelegate.swift in Sources */,
 				8ED2B6A92D6DE3DA0041C6E5 /* AutoConnectVC.swift in Sources */,
 				8E04453E2D68C0B000E47555 /* SceneDelegate.swift in Sources */,
+				8E4BB53E2D8329950098BA7A /* FMGetViewController.swift in Sources */,
 				8E0445762D68C75100E47555 /* knownManufacturers.swift in Sources */,
 				8E0445732D68C3B200E47555 /* BLEDeviceCell.swift in Sources */,
 				8E0E92D72D68EBB4008BF11D /* ReadDataVC.swift in Sources */,
