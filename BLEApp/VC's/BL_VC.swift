@@ -403,6 +403,13 @@ class BL_VC: UIViewController, UITableViewDataSource, UITableViewDelegate, BLEMa
             let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
             alert.addAction(cancelAction)
             
+            // ✅ iPad Fix
+            if let popoverController = alert.popoverPresentationController {
+                popoverController.sourceView = self.view // Anchor to the main view
+                popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.maxY, width: 0, height: 0)
+                popoverController.permittedArrowDirections = [] // Remove arrow
+            }
+            
             present(alert, animated: true, completion: nil)
         }
         
